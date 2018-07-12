@@ -14,13 +14,13 @@
  */
 package org.apache.geode.internal.cache;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.distributed.internal.PoolStatHelper;
 
 /**
  * @since GemFire 5.7
  */
-public class DummyCachePerfStats extends CachePerfStats {
+public class DummyCachePerfStats extends CachePerfStatsImpl {
 
   // ////////////////////// Constructors ////////////////////////
 
@@ -391,7 +391,7 @@ public class DummyCachePerfStats extends CachePerfStats {
   // //// Special Instance Methods /////
 
   @Override
-  void close() {}
+  public void close() {}
 
   @Override
   public boolean isClosed() {
@@ -410,10 +410,10 @@ public class DummyCachePerfStats extends CachePerfStats {
   public void incEventQueueThrottleCount(int items) {}
 
   @Override
-  protected void incEventQueueThrottleTime(long nanos) {}
+  public void incEventQueueThrottleTime(long nanos) {}
 
   @Override
-  protected void incEventThreads(int items) {}
+  public void incEventThreads(int items) {}
 
   @Override
   public void incEntryCount(int delta) {}

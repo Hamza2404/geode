@@ -75,8 +75,8 @@ public class DistributedSystemStatsJUnitTest {
     props.setProperty(JMX_MANAGER_PORT, "0");
 
     this.system = (InternalDistributedSystem) DistributedSystem.connect(props);
-    assertNotNull(this.system.getStatSampler());
-    assertNotNull(this.system.getStatSampler().waitForSampleCollector(TIMEOUT));
+    assertNotNull(this.system.getInternalDistributedSystemStats().getStatSampler());
+    assertNotNull(this.system.getInternalDistributedSystemStats().getStatSampler().waitForSampleCollector(TIMEOUT));
 
     this.cache = new CacheFactory().create();
 
@@ -115,12 +115,12 @@ public class DistributedSystemStatsJUnitTest {
   }
 
   protected void waitForNotification() throws InterruptedException {
-    this.system.getStatSampler().waitForSample(TIMEOUT);
+    this.system.getInternalDistributedSystemStats().getStatSampler().waitForSample(TIMEOUT);
     Thread.sleep(SLEEP);
   }
 
   protected void sample() throws InterruptedException {
-    this.system.getStatSampler().getSampleCollector().sample(NanoTimer.getTime());
+    this.system.getInternalDistributedSystemStats().getStatSampler().getSampleCollector().sample(NanoTimer.getTime());
     Thread.sleep(SLEEP);
   }
 

@@ -15,9 +15,9 @@
 package org.apache.geode.internal.admin.statalerts;
 
 import org.apache.geode.DataSerializable;
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 
 /**
  * Provides informations of the statistic

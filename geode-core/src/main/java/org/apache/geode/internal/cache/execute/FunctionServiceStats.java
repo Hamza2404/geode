@@ -14,11 +14,11 @@
  */
 package org.apache.geode.internal.cache.execute;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.internal.statistics.DummyStatisticsImpl;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
@@ -26,7 +26,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 public class FunctionServiceStats {
 
   /** The <code>StatisticsType</code> of the statistics */
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   /**
    * Total number of completed function.execute() calls (aka invocations of a function) per VM. Name
@@ -85,69 +85,67 @@ public class FunctionServiceStats {
 
 
   /** Id of the FUNCTION_EXECUTIONS_COMPLETED statistic */
-  private static final int _functionExecutionsCompletedId;
+  private int _functionExecutionsCompletedId;
 
   /** Id of the FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME statistic */
-  private static final int _functionExecutionsCompletedProcessingTimeId;
+  private int _functionExecutionsCompletedProcessingTimeId;
 
   /** Id of the FUNCTION_EXECUTIONS_RUNNING statistic */
-  private static final int _functionExecutionsRunningId;
+  private int _functionExecutionsRunningId;
 
   /** Id of the RESULTS_SENT_TO_RESULTCOLLECTOR statistic */
-  private static final int _resultsSentToResultCollectorId;
+  private int _resultsSentToResultCollectorId;
 
   /** Id of the FUNCTION_EXECUTIONS_CALL statistic */
-  private static final int _functionExecutionCallsId;
+  private int _functionExecutionCallsId;
 
   /** Id of the FUNCTION_EXECUTION_HASRESULT_COMPLETED_TIME statistic */
-  private static final int _functionExecutionsHasResultCompletedProcessingTimeId;
+  private int _functionExecutionsHasResultCompletedProcessingTimeId;
 
   /** Id of the FUNCTION_EXECUTIONS_HASRESULT_RUNNING statistic */
-  private static final int _functionExecutionsHasResultRunningId;
+  private int _functionExecutionsHasResultRunningId;
 
   /** Id of the FUNCTION_EXECUTIONS_EXCEPTIONS statistic */
-  private static final int _functionExecutionExceptions;
+  private int _functionExecutionExceptions;
 
   /** Id of the RESULTS_RECEIVED statistic */
-  private static final int _resultsReceived;
+  private int _resultsReceived;
 
 
   /**
    * Static initializer to create and initialize the <code>StatisticsType</code>
    */
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "FunctionServiceStatistics";
     String statDescription =
         "This is the aggregate Function Execution Stats (for all function Executions)";
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statDescription,
-        new StatisticDescriptor[] {f.createIntCounter(FUNCTION_EXECUTIONS_COMPLETED,
+    _type = factory.createType(statName, statDescription,
+        new StatisticDescriptor[] {factory.createIntCounter(FUNCTION_EXECUTIONS_COMPLETED,
             "Total number of completed function.execute() calls", "operations"),
 
-            f.createLongCounter(FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME,
+            factory.createLongCounter(FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME,
                 "Total time consumed for all completed invocations", "nanoseconds"),
 
-            f.createIntGauge(FUNCTION_EXECUTIONS_RUNNING, "number of currently running invocations",
+            factory.createIntGauge(FUNCTION_EXECUTIONS_RUNNING, "number of currently running invocations",
                 "operations"),
 
-            f.createIntCounter(RESULTS_SENT_TO_RESULTCOLLECTOR,
+            factory.createIntCounter(RESULTS_SENT_TO_RESULTCOLLECTOR,
                 "Total number of results sent to the ResultCollector", "operations"),
 
-            f.createIntCounter(RESULTS_RECEIVED,
+            factory.createIntCounter(RESULTS_RECEIVED,
                 "Total number of results received and passed to the ResultCollector", "operations"),
 
-            f.createIntCounter(FUNCTION_EXECUTION_CALLS,
+            factory.createIntCounter(FUNCTION_EXECUTION_CALLS,
                 "Total number of FunctionService.execute() calls", "operations"),
 
-            f.createLongCounter(FUNCTION_EXECUTIONS_HASRESULT_COMPLETED_PROCESSING_TIME,
+            factory.createLongCounter(FUNCTION_EXECUTIONS_HASRESULT_COMPLETED_PROCESSING_TIME,
                 "Total time consumed for all completed execute() calls where hasResult() returns true.",
                 "nanoseconds"),
 
-            f.createIntGauge(FUNCTION_EXECUTIONS_HASRESULT_RUNNING,
+            factory.createIntGauge(FUNCTION_EXECUTIONS_HASRESULT_RUNNING,
                 "A gauge indicating the number of currently active execute() calls for functions where hasResult() returns true.",
                 "operations"),
-            f.createIntCounter(FUNCTION_EXECUTION_EXCEPTIONS,
+            factory.createIntCounter(FUNCTION_EXECUTION_EXCEPTIONS,
                 "Total number of Exceptions Occurred while executing function", "operations"),
 
         });
@@ -180,15 +178,8 @@ public class FunctionServiceStats {
    * @param name The name of the <code>Statistics</code>
    */
   public FunctionServiceStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this._stats = factory.createAtomicStatistics(_type, name);
-  }
-
-  private FunctionServiceStats() {
-    this._stats = new DummyStatisticsImpl(this._type, null, 0);
-  }
-
-  static FunctionServiceStats createDummy() {
-    return new FunctionServiceStats();
   }
 
   // /////////////////// Instance Methods /////////////////////
@@ -340,7 +331,7 @@ public class FunctionServiceStats {
    * @return the current time (ns)
    */
   public long startTime() {
-    return DistributionStats.getStatTime();
+    return System.nanoTime();
   }
 
   /**
@@ -370,7 +361,7 @@ public class FunctionServiceStats {
    *        _functionExecutionHasResultCompleteProcessingTimeId
    */
   public void endFunctionExecution(long start, boolean haveResult) {
-    long ts = DistributionStats.getStatTime();
+    long ts = System.nanoTime();
 
     // Increment number of function executions completed
     this._stats.incInt(_functionExecutionsCompletedId, 1);

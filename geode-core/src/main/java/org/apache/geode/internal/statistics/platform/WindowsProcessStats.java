@@ -15,10 +15,11 @@
 
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.statistics.HostStatHelper;
 import org.apache.geode.internal.statistics.LocalStatisticsImpl;
@@ -46,60 +47,59 @@ public class WindowsProcessStats {
   private static final int workingSetSizeLONG = 9;
   private static final int workingSetSizePeakLONG = 10;
 
-  private static final StatisticsType myType;
+  private StatisticsType myType;
 
-  private static void checkOffset(String name, int offset) {
+  private void checkOffset(String name, int offset) {
     int id = myType.nameToId(name);
     Assert.assertTrue(offset == id,
         "Expected the offset for " + name + " to be " + offset + " but it was " + id);
   }
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    myType = f.createType("WindowsProcessStats", "Statistics on a Microsoft Window's process.",
+  private void initializeStats(StatisticsFactory factory) {
+    myType = factory.createType("WindowsProcessStats", "Statistics on a Microsoft Window's process.",
         new StatisticDescriptor[] {
-            f.createIntGauge("handles",
+            factory.createIntGauge("handles",
                 "The total number of handles currently open by this process. This number is the sum of the handles currently open by each thread in this process.",
                 "items"),
-            f.createIntGauge("priorityBase",
+            factory.createIntGauge("priorityBase",
                 "The current base priority of the process. Threads within a process can raise and lower their own base priority relative to the process's base priority",
                 "priority"),
-            f.createIntGauge("threads",
+            factory.createIntGauge("threads",
                 "Number of threads currently active in this process. An instruction is the basic unit of execution in a processor, and a thread is the object that executes instructions. Every running process has at least one thread.",
                 "threads"),
 
-            f.createLongCounter("activeTime",
+            factory.createLongCounter("activeTime",
                 "The elapsed time in milliseconds that all of the threads of this process used the processor to execute instructions. An instruction is the basic unit of execution in a computer, a thread is the object that executes instructions, and a process is the object created when a program is run. Code executed to handle some hardware interrupts and trap conditions are included in this count.",
                 "milliseconds", false),
 
-            f.createLongCounter("pageFaults",
+            factory.createLongCounter("pageFaults",
                 "The total number of Page Faults by the threads executing in this process. A page fault occurs when a thread refers to a virtual memory page that is not in its working set in main memory. This will not cause the page to be fetched from disk if it is on the standby list and hence already in main memory, or if it is in use by another process with whom the page is shared.",
                 "operations", false),
-            f.createLongGauge("pageFileSize",
+            factory.createLongGauge("pageFileSize",
                 "The current number of bytes this process has used in the paging file(s). Paging files are used to store pages of memory used by the process that are not contained in other files. Paging files are shared by all processes, and lack of space in paging files can prevent other processes from allocating memory.",
                 "bytes"),
-            f.createLongGauge("pageFileSizePeak",
+            factory.createLongGauge("pageFileSizePeak",
                 "The maximum number of bytes this process has used in the paging file(s). Paging files are used to store pages of memory used by the process that are not contained in other files. Paging files are shared by all processes, and lack of space in paging files can prevent other processes from allocating memory.",
                 "bytes"),
-            f.createLongGauge("privateSize",
+            factory.createLongGauge("privateSize",
                 "The current number of bytes this process has allocated that cannot be shared with other processes.",
                 "bytes"),
-            f.createLongCounter("systemTime",
+            factory.createLongCounter("systemTime",
                 "The elapsed time in milliseconds that the threads of the process have spent executing code in privileged mode. When a Windows system service is called, the service will often run in Privileged Mode to gain access to system-private data. Such data is protected from access by threads executing in user mode. Calls to the system can be explicit or implicit, such as page faults or interrupts. Unlike some early operating systems, Windows uses process boundaries for subsystem protection in addition to the traditional protection of user and privileged modes. These subsystem processes provide additional protection. Therefore, some work done by Windows on behalf of your application might appear in other subsystem processes in addition to the privileged time in your process.",
                 "milliseconds", false),
-            f.createLongCounter("userTime",
+            factory.createLongCounter("userTime",
                 "The elapsed time in milliseconds that this process's threads have spent executing code in user mode. Applications, environment subsystems, and integral subsystems execute in user mode. Code executing in User Mode cannot damage the integrity of the Windows Executive, Kernel, and device drivers. Unlike some early operating systems, Windows uses process boundaries for subsystem protection in addition to the traditional protection of user and privileged modes. These subsystem processes provide additional protection. Therefore, some work done by Windows on behalf of your application might appear in other subsystem processes in addition to the privileged time in your process.",
                 "milliseconds", false),
-            f.createLongGauge("virtualSize",
+            factory.createLongGauge("virtualSize",
                 "Virtual Bytes is the current size in bytes of the virtual address space the process is using. Use of virtual address space does not necessarily imply corresponding use of either disk or main memory pages. Virtual space is finite, and by using too much, the process can limit its ability to load libraries.",
                 "bytes"),
-            f.createLongGauge("virtualSizePeak",
+            factory.createLongGauge("virtualSizePeak",
                 "The maximum number of bytes of virtual address space the process has used at any one time. Use of virtual address space does not necessarily imply corresponding use of either disk or main memory pages. Virtual space is however finite, and by using too much, the process might limit its ability to load libraries.",
                 "bytes"),
-            f.createLongGauge("workingSetSize",
+            factory.createLongGauge("workingSetSize",
                 "The current number of bytes in the Working Set of this process. The Working Set is the set of memory pages touched recently by the threads in the process. If free memory in the computer is above a threshold, pages are left in the Working Set of a process even if they are not in use. When free memory falls below a threshold, pages are trimmed from Working Sets. If they are needed they will then be soft-faulted back into the Working Set before they are paged out out to disk.",
                 "bytes"),
-            f.createLongGauge("workingSetSizePeak",
+            factory.createLongGauge("workingSetSizePeak",
                 "The maximum number of bytes in the Working Set of this process at any point in time. The Working Set is the set of memory pages touched recently by the threads in the process. If free memory in the computer is above a threshold, pages are left in the Working Set of a process even if they are not in use. When free memory falls below a threshold, pages are trimmed from Working Sets. If they are needed they will then be soft-faulted back into the Working Set before they leave main memory.",
                 "bytes"),
 
@@ -121,12 +121,8 @@ public class WindowsProcessStats {
     checkOffset("workingSetSizePeak", workingSetSizePeakLONG);
   }
 
-  private WindowsProcessStats() {
-    // no instances allowed
-  }
-
-  public static StatisticsType getType() {
-    return myType;
+  public WindowsProcessStats(StatisticsFactory factory) {
+    initializeStats(factory);
   }
 
   /**
@@ -147,4 +143,7 @@ public class WindowsProcessStats {
     };
   }
 
+  public StatisticsType getType() {
+    return myType;
+  }
 }

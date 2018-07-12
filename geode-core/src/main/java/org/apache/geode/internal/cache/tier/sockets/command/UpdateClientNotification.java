@@ -20,6 +20,7 @@ import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
 import org.apache.geode.internal.security.SecurityService;
@@ -43,11 +44,11 @@ public class UpdateClientNotification extends BaseCommand {
     CacheServerStats stats = serverConnection.getCacheServerStats();
 
     long oldStart = start;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incReadUpdateClientNotificationRequestTime(start - oldStart);
 
     oldStart = start;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incProcessUpdateClientNotificationTime(start - oldStart);
   }
 

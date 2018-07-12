@@ -21,6 +21,7 @@ import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -42,7 +43,7 @@ public class CloseConnection extends BaseCommand {
     CacheServerStats stats = serverConnection.getCacheServerStats();
     long oldStart = start;
     boolean respondToClient = serverConnection.getClientVersion().compareTo(Version.GFE_90) >= 0;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incReadCloseConnectionRequestTime(start - oldStart);
 
     if (respondToClient) {
@@ -76,7 +77,7 @@ public class CloseConnection extends BaseCommand {
       }
       serverConnection.setFlagProcessMessagesAsFalse();
 
-      stats.incProcessCloseConnectionTime(DistributionStats.getStatTime() - start);
+      stats.incProcessCloseConnectionTime(System.nanoTime() - start);
     }
 
   }

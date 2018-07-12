@@ -31,6 +31,7 @@ import org.apache.geode.distributed.internal.ServerLocation;
 import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.execute.AbstractExecution;
 import org.apache.geode.internal.cache.execute.FunctionStats;
+import org.apache.geode.internal.cache.execute.FunctionStatsImpl;
 import org.apache.geode.internal.cache.execute.InternalFunctionException;
 import org.apache.geode.internal.cache.execute.InternalFunctionInvocationTargetException;
 import org.apache.geode.internal.cache.execute.MemberMappedArgument;
@@ -562,7 +563,7 @@ public class ExecuteFunctionOp {
                   DistributedMember memberID =
                       (DistributedMember) ((ArrayList) resultResponse).get(1);
                   this.resultCollector.addResult(memberID, cause);
-                  FunctionStats.getFunctionStats(this.functionId).incResultsReceived();
+                  FunctionStatsImpl.getFunctionStats(this.functionId).incResultsReceived();
                   continue;
                 } else {
                   exception = ex;
@@ -576,7 +577,7 @@ public class ExecuteFunctionOp {
                 DistributedMember memberID =
                     (DistributedMember) ((ArrayList) resultResponse).get(1);
                 resultCollector.addResult(memberID, result);
-                FunctionStats.getFunctionStats(this.functionId).incResultsReceived();
+                FunctionStatsImpl.getFunctionStats(this.functionId).incResultsReceived();
               }
             } while (!executeFunctionResponseMsg.isLastChunk());
 

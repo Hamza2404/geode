@@ -19,9 +19,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.geode.DataSerializer;
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
@@ -30,25 +31,26 @@ public class FetchResourceAttributesResponse extends AdminResponse {
 
   private RemoteStat[] stats;
 
-  public static FetchResourceAttributesResponse create(DistributionManager dm,
+  public static FetchResourceAttributesResponse create(DistributionManager distributionManager,
       InternalDistributedMember recipient, long rsrcUniqueId) {
-    FetchResourceAttributesResponse m = new FetchResourceAttributesResponse();
-    m.setRecipient(recipient);
-    Statistics s = null;
-    InternalDistributedSystem ds = dm.getSystem();
-    s = ds.findStatisticsByUniqueId(rsrcUniqueId);
-    if (s != null) {
-      StatisticsType type = s.getType();
-      StatisticDescriptor[] tmp = type.getStatistics();
-      m.stats = new RemoteStat[tmp.length];
-      for (int i = 0; i < tmp.length; i++) {
-        m.stats[i] = new RemoteStat(s, tmp[i]);
+    FetchResourceAttributesResponse attributesResponse = new FetchResourceAttributesResponse();
+    attributesResponse.setRecipient(recipient);
+    Statistics statistics = null;
+    InternalDistributedSystemStats internalDistributedSystemStats =
+        distributionManager.getSystem().getInternalDistributedSystemStats();
+    statistics = internalDistributedSystemStats.findStatisticsByUniqueId(rsrcUniqueId);
+    if (statistics != null) {
+      StatisticsType type = statistics.getType();
+      StatisticDescriptor[] statisticDescriptors = type.getStatistics();
+      attributesResponse.stats = new RemoteStat[statisticDescriptors.length];
+      for (int i = 0; i < statisticDescriptors.length; i++) {
+        attributesResponse.stats[i] = new RemoteStat(statistics, statisticDescriptors[i]);
       }
     }
-    if (m.stats == null) {
-      m.stats = new RemoteStat[0];
+    if (attributesResponse.stats == null) {
+      attributesResponse.stats = new RemoteStat[0];
     }
-    return m;
+    return attributesResponse;
   }
 
   public RemoteStat[] getStats() {

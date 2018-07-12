@@ -18,14 +18,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 
 /**
  * The implementation of {@link StatisticsTypeFactory}. Each VM can any have a single instance of
- * this class which can be accessed by calling {@link #singleton()}.
+ * this class.
  *
  * @see <A href="package-summary.html#statistics">Package introduction</A>
  *
@@ -34,26 +34,23 @@ import org.apache.geode.internal.i18n.LocalizedStrings;
  *
  */
 public class StatisticsTypeFactoryImpl implements StatisticsTypeFactory {
-  // static fields
-  private static final StatisticsTypeFactoryImpl singleton = new StatisticsTypeFactoryImpl();
+//   static fields
+//  private static final StatisticsTypeFactoryImpl singleton = new StatisticsTypeFactoryImpl();
 
   // static methods
   /**
    * Returns the single instance of this class.
    */
-  public static StatisticsTypeFactory singleton() {
-    return singleton;
-  }
+//  public static StatisticsTypeFactory singleton() {
+//    return singleton;
+//  }
 
-  protected static void clear() {
-    singleton.statTypes.clear();
+  protected void clear() {
+    this.statTypes.clear();
   }
-
-  // constructors
-  private StatisticsTypeFactoryImpl() {}
 
   // instance fields
-  private final HashMap statTypes = new HashMap();
+  private final HashMap<String,StatisticsType> statTypes = new HashMap<>();
 
   // instance methods
   /**
@@ -62,8 +59,8 @@ public class StatisticsTypeFactoryImpl implements StatisticsTypeFactory {
    *
    * @throws IllegalArgumentException if the type already exists and is not equal to the new type
    */
-  public StatisticsType addType(StatisticsType t) {
-    StatisticsType result = t;
+  private StatisticsType addType(StatisticsType statisticsType) {
+    StatisticsType result = statisticsType;
     synchronized (this.statTypes) {
       StatisticsType currentValue = findType(result.getName());
       if (currentValue == null) {
@@ -84,7 +81,7 @@ public class StatisticsTypeFactoryImpl implements StatisticsTypeFactory {
   }
 
   public StatisticsType findType(String name) {
-    return (StatisticsType) this.statTypes.get(name);
+    return this.statTypes.get(name);
   }
 
   public StatisticsType[] createTypesFromXml(Reader reader) throws IOException {

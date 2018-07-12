@@ -192,8 +192,8 @@ public class ReplyMessage extends HighPriorityDistributionMessage {
     try {
       this.process(dm, processor);
 
-      if (DistributionStats.enableClockStats) {
-        dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+      if (DistributionStatsImpl.enableClockStats) {
+        dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
       }
     } catch (RuntimeException ex) {
       if (processor != null) {

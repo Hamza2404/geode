@@ -29,6 +29,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
@@ -57,7 +58,6 @@ public class Request extends BaseCommand {
     Part regionNamePart = null, keyPart = null, valuePart = null;
     String regionName = null;
     Object callbackArg = null, key = null;
-    CachedRegionHelper crHelper = serverConnection.getCachedRegionHelper();
     CacheServerStats stats = serverConnection.getCacheServerStats();
     StringId errMessage = null;
 
@@ -65,7 +65,7 @@ public class Request extends BaseCommand {
     // requiresResponse = true;
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadGetRequestTime(start - oldStart);
     }
     // Retrieve the data from the message parts
@@ -173,7 +173,7 @@ public class Request extends BaseCommand {
         }
         {
           long oldStart = start;
-          start = DistributionStats.getStatTime();
+          start = System.nanoTime();
           stats.incProcessGetTime(start - oldStart);
         }
 
@@ -196,7 +196,7 @@ public class Request extends BaseCommand {
               serverConnection.getName(), serverConnection.getSocketString(), regionName, key,
               data);
         }
-        stats.incWriteGetResponseTime(DistributionStats.getStatTime() - start);
+        stats.incWriteGetResponseTime(System.nanoTime() - start);
       }
     }
   }

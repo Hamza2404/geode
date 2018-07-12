@@ -44,7 +44,7 @@ import org.apache.geode.internal.cache.Token;
 import org.apache.geode.internal.cache.versions.RegionVersionVector;
 import org.apache.geode.internal.cache.versions.VersionTag;
 import org.apache.geode.internal.offheap.MemoryAllocatorImpl;
-import org.apache.geode.internal.offheap.OffHeapMemoryStats;
+import org.apache.geode.internal.offheap.OffHeapStorageStats;
 import org.apache.geode.internal.offheap.OutOfOffHeapMemoryListener;
 import org.apache.geode.internal.offheap.SlabImpl;
 import org.apache.geode.internal.offheap.StoredObject;
@@ -89,7 +89,7 @@ public class AbstractRegionEntryTest {
     LocalRegion lr = mock(LocalRegion.class);
     RegionEntryContext regionEntryContext = mock(RegionEntryContext.class);
     OutOfOffHeapMemoryListener ooohml = mock(OutOfOffHeapMemoryListener.class);
-    OffHeapMemoryStats stats = mock(OffHeapMemoryStats.class);
+    OffHeapStorageStats stats = mock(OffHeapStorageStats.class);
     SlabImpl slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma =
         MemoryAllocatorImpl.createForUnitTest(ooohml, stats, new SlabImpl[] {slab});

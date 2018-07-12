@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.LogWriter;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.client.ClientCache;
@@ -77,7 +77,8 @@ import org.apache.geode.internal.util.IOUtils;
  *
  * @since GemFire 3.0
  */
-public abstract class DistributedSystem implements StatisticsFactory {
+//public abstract class DistributedSystem implements StatisticsFactory {
+public abstract class DistributedSystem{
 
   /**
    * The instances of <code>DistributedSystem</code> created in this VM. Presently only one connect
@@ -749,5 +750,7 @@ public abstract class DistributedSystem implements StatisticsFactory {
    * Returns the new DistributedSystem if there was an auto-reconnect
    */
   public abstract DistributedSystem getReconnectedSystem();
+
+  public abstract StatisticsFactory getStatisticsFactory();
 
 }

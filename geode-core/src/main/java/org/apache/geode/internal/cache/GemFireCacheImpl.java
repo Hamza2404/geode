@@ -245,6 +245,7 @@ import org.apache.geode.pdx.internal.PdxInstanceFactoryImpl;
 import org.apache.geode.pdx.internal.PdxInstanceImpl;
 import org.apache.geode.pdx.internal.TypeRegistry;
 import org.apache.geode.redis.GeodeRedisServer;
+import org.apache.geode.statistics.StatsFactory;
 
 // TODO: somebody Come up with more reasonable values for {@link #DEFAULT_LOCK_TIMEOUT}, etc.
 /**
@@ -865,7 +866,7 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
         this.securityService = SecurityServiceFactory.create();
       }
 
-      if (!this.isClient && PoolManager.getAll().isEmpty()) {
+      if (!this.isClient && PoolManager.getAll().isEmpty() && this.getSystem().getConfig().getJmxManager()) {
         // We only support management on members of a distributed system
         // Should do this: if (!getSystem().isLoner()) {
         // but it causes quickstart.CqClientTest to hang
@@ -892,8 +893,8 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
       this.cqService = CqServiceProvider.create(this);
 
       // Create the CacheStatistics
-      this.cachePerfStats = new CachePerfStats(system);
-      CachePerfStats.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
+      this.cachePerfStats = StatsFactory.createCachePerfStatsImpl(system.getStatisticsFactory(),null);
+      CachePerfStatsImpl.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
 
       this.transactionManager = new TXManagerImpl(this.cachePerfStats, this);
       this.dm.addMembershipListener(this.transactionManager);

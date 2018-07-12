@@ -212,9 +212,9 @@ public class GatewaySenderOverflowMBeanAttributesDistributedTest extends WANTest
 
   private void waitForSamplerToSample(int numTimesToSample) throws Exception {
     InternalDistributedSystem ids = (InternalDistributedSystem) cache.getDistributedSystem();
-    assertThat(ids.getStatSampler().waitForSampleCollector(60000)).isNotNull();
+    assertThat(ids.getInternalDistributedSystemStats().getStatSampler().waitForSampleCollector(60000)).isNotNull();
     for (int i = 0; i < numTimesToSample; i++) {
-      assertThat(ids.getStatSampler().waitForSample((60000))).isTrue();
+      assertThat(ids.getInternalDistributedSystemStats().getStatSampler().waitForSample((60000))).isTrue();
     }
   }
 }

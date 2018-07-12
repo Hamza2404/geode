@@ -17,7 +17,8 @@ package org.apache.geode.internal.cache;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * A holder for a disk Directory. Used for maintaining the available space and updating disk
@@ -57,7 +58,7 @@ public class DirectoryHolder {
       this.capacity = space * 1024 * 1024;
     }
     this.index = index;
-    this.dirStats = new DiskDirectoryStats(factory, ownersName);
+    this.dirStats = StatsFactory.createDiskDirectoryStatsImpl(factory, ownersName);
     this.dirStats.setMaxSpace(this.capacity);
   }
 

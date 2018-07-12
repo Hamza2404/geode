@@ -99,7 +99,7 @@ public class ClientHealthMonitor {
    */
   private static final long DEFAULT_CLIENT_MONITOR_INTERVAL_IN_MILLIS = 1000;
 
-  private final CacheClientNotifierStats stats;
+  private final CacheClientNotifierStatsImpl stats;
 
   /**
    * Used to track the number of handshakes in a VM primary use, license enforcement.
@@ -143,7 +143,7 @@ public class ClientHealthMonitor {
    * @return The singleton <code>ClientHealthMonitor</code> instance
    */
   public static ClientHealthMonitor getInstance(InternalCache cache, int maximumTimeBetweenPings,
-      CacheClientNotifierStats stats) {
+      CacheClientNotifierStatsImpl stats) {
     createInstance(cache, maximumTimeBetweenPings, stats);
     return _instance;
   }
@@ -608,7 +608,7 @@ public class ClientHealthMonitor {
    * @param maximumTimeBetweenPings The maximum time allowed between pings before determining the
    */
   protected static synchronized void createInstance(InternalCache cache,
-      int maximumTimeBetweenPings, CacheClientNotifierStats stats) {
+      int maximumTimeBetweenPings, CacheClientNotifierStatsImpl stats) {
     refCount++;
     if (_instance != null) {
       return;
@@ -624,7 +624,7 @@ public class ClientHealthMonitor {
    * @param maximumTimeBetweenPings The maximum time allowed between pings before determining the
    */
   private ClientHealthMonitor(InternalCache cache, int maximumTimeBetweenPings,
-      CacheClientNotifierStats stats) {
+      CacheClientNotifierStatsImpl stats) {
     // Set the Cache
     this._cache = cache;
     this.maximumTimeBetweenPings = maximumTimeBetweenPings;

@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.InvalidDeltaException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheEvent;
@@ -79,6 +79,7 @@ import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Implements the CqService functionality.
@@ -165,8 +166,8 @@ public class CqServiceImpl implements CqService {
     this.matchingCqMap = new ConcurrentHashMap<String, HashSet<String>>();
 
     // Initialize the VSD statistics
-    StatisticsFactory factory = this.cache.getDistributedSystem();
-    this.stats = new CqServiceVsdStats(factory);
+    StatisticsFactory factory = this.cache.getDistributedSystem().getStatisticsFactory();
+    this.stats = StatsFactory.createCqServiceVsdStatsImpl(factory);
     this.cqServiceStats = new CqServiceStatisticsImpl(this);
   }
 
@@ -1251,13 +1252,30 @@ public class CqServiceImpl implements CqService {
           }
         }
         cqInfo.put(cQuery.getFilterID(), cqRegionEvent);
-        cQuery.getVsdStats().updateStats(cqRegionEvent);
+        updateStats(cqRegionEvent,cQuery.getVsdStats());
       }
       if (pf.isLocalProfile()) {
         frInfo.setLocalCqInfo(cqInfo);
       } else {
         frInfo.setCqRoutingInfo(cf.getDistributedMember(), cqInfo);
       }
+    }
+  }
+
+  private void updateStats(Integer cqEvent,CqQueryVsdStats stats) {
+    if (cqEvent == null) {
+      return;
+    }
+    switch (cqEvent) {
+      case MessageType.LOCAL_CREATE:
+        stats.incNumInserts();
+        return;
+      case MessageType.LOCAL_UPDATE:
+        stats.incNumUpdates();
+        return;
+      case MessageType.LOCAL_DESTROY:
+        stats.incNumDeletes();
+        return;
     }
   }
 

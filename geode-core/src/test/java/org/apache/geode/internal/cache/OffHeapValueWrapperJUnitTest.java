@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.apache.geode.internal.cache.entries.DiskEntry.Helper.Flushable;
 import org.apache.geode.internal.cache.entries.DiskEntry.Helper.OffHeapValueWrapper;
 import org.apache.geode.internal.offheap.MemoryAllocatorImpl;
-import org.apache.geode.internal.offheap.NullOffHeapMemoryStats;
+import org.apache.geode.internal.offheap.NullOffHeapStorageStats;
 import org.apache.geode.internal.offheap.NullOutOfOffHeapMemoryListener;
 import org.apache.geode.internal.offheap.SlabImpl;
 import org.apache.geode.internal.offheap.StoredObject;
@@ -43,7 +43,7 @@ public class OffHeapValueWrapperJUnitTest {
   @Before
   public void setUp() throws Exception {
     MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-        new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+        new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
   }
 
   @After

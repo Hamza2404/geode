@@ -40,6 +40,7 @@ import org.apache.geode.internal.cache.versions.VersionSource;
 import org.apache.geode.internal.cache.versions.VersionStamp;
 import org.apache.geode.internal.cache.versions.VersionTag;
 import org.apache.geode.internal.i18n.LocalizedStrings;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * A disk region that is created when doing offline validation.
@@ -47,16 +48,16 @@ import org.apache.geode.internal.i18n.LocalizedStrings;
  * @since GemFire prPersistSprint3
  */
 public class ValidatingDiskRegion extends DiskRegion implements DiskRecoveryStore {
-  protected ValidatingDiskRegion(DiskStoreImpl ds, DiskRegionView drv) {
-    super(ds, drv.getName(), drv.isBucket(), true, false, true,
-        new DiskRegionStats(ds.getCache().getDistributedSystem(), drv.getName()),
-        new DummyCancelCriterion(), new DummyDiskExceptionHandler(), null, drv.getFlags(),
-        drv.getPartitionName(), drv.getStartingBucketId(), drv.getCompressorClassName(),
-        drv.getOffHeap());
-    setConfig(drv.getLruAlgorithm(), drv.getLruAction(), drv.getLruLimit(),
-        drv.getConcurrencyLevel(), drv.getInitialCapacity(), drv.getLoadFactor(),
-        drv.getStatisticsEnabled(), drv.isBucket(), drv.getFlags(), drv.getPartitionName(),
-        drv.getStartingBucketId(), drv.getCompressorClassName(), drv.getOffHeap());
+  protected ValidatingDiskRegion(DiskStoreImpl diskStore, DiskRegionView diskRegionView) {
+    super(diskStore, diskRegionView.getName(), diskRegionView.isBucket(), true, false, true,
+        StatsFactory.createDiskRegionStatsImpl(diskStore.getCache().getDistributedSystem().getStatisticsFactory(), diskRegionView.getName()),
+        new DummyCancelCriterion(), new DummyDiskExceptionHandler(), null, diskRegionView.getFlags(),
+        diskRegionView.getPartitionName(), diskRegionView.getStartingBucketId(), diskRegionView.getCompressorClassName(),
+        diskRegionView.getOffHeap());
+    setConfig(diskRegionView.getLruAlgorithm(), diskRegionView.getLruAction(), diskRegionView.getLruLimit(),
+        diskRegionView.getConcurrencyLevel(), diskRegionView.getInitialCapacity(), diskRegionView.getLoadFactor(),
+        diskRegionView.getStatisticsEnabled(), diskRegionView.isBucket(), diskRegionView.getFlags(), diskRegionView.getPartitionName(),
+        diskRegionView.getStartingBucketId(), diskRegionView.getCompressorClassName(), diskRegionView.getOffHeap());
   }
 
   static ValidatingDiskRegion create(DiskStoreImpl dsi, DiskRegionView drv) {

@@ -14,8 +14,8 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * An instance of a Statistics resource. There may be zero, one or many instances depending on the

@@ -56,6 +56,7 @@ import org.apache.geode.internal.cache.tier.sockets.ServerQueueStatus;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LocalLogWriter;
 import org.apache.geode.internal.util.StopWatch;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.ClientServerTest;
 
 @Category({ClientServerTest.class})
@@ -68,7 +69,7 @@ public class QueueManagerJUnitTest {
 
   private DummyPool pool;
   private LocalLogWriter logger;
-  private DistributedSystem ds;
+  private DistributedSystem distributedSystem;
   private EndpointManagerImpl endpoints;
   private DummySource source;
   private DummyFactory factory;
@@ -82,10 +83,10 @@ public class QueueManagerJUnitTest {
     Properties properties = new Properties();
     properties.put(MCAST_PORT, "0");
     properties.put(LOCATORS, "");
-    ds = DistributedSystem.connect(properties);
-    stats = new PoolStats(ds, "QueueManagerJUnitTest");
+    distributedSystem = DistributedSystem.connect(properties);
+    stats = StatsFactory.createPoolStatsImpl(distributedSystem.getStatisticsFactory(), "QueueManagerJUnitTest");
     pool = new DummyPool();
-    endpoints = new EndpointManagerImpl("pool", ds, ds.getCancelCriterion(), pool.getStats());
+    endpoints = new EndpointManagerImpl("pool", distributedSystem, distributedSystem.getCancelCriterion(), pool.getStats());
     source = new DummySource();
     factory = new DummyFactory();
     background = Executors.newSingleThreadScheduledExecutor();
@@ -93,8 +94,8 @@ public class QueueManagerJUnitTest {
         "<ExpectedException action=add>" + expectedPrimaryErrorMsg + "</ExpectedException>";
     final String addExpectedREM =
         "<ExpectedException action=add>" + expectedRedundantErrorMsg + "</ExpectedException>";
-    ds.getLogWriter().info(addExpectedPEM);
-    ds.getLogWriter().info(addExpectedREM);
+    distributedSystem.getLogWriter().info(addExpectedPEM);
+    distributedSystem.getLogWriter().info(addExpectedREM);
   }
 
   @After
@@ -107,10 +108,10 @@ public class QueueManagerJUnitTest {
     final String removeExpectedREM =
         "<ExpectedException action=remove>" + expectedRedundantErrorMsg + "</ExpectedException>";
 
-    ds.getLogWriter().info(removeExpectedPEM);
-    ds.getLogWriter().info(removeExpectedREM);
+    distributedSystem.getLogWriter().info(removeExpectedPEM);
+    distributedSystem.getLogWriter().info(removeExpectedREM);
 
-    ds.disconnect();
+    distributedSystem.disconnect();
   }
 
   @Test
@@ -119,7 +120,7 @@ public class QueueManagerJUnitTest {
     factory.addConnection(0, 0, 2);
     factory.addConnection(0, 0, 3);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 2, 2000, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
     assertPortEquals(1, manager.getAllConnections().getPrimary());
     assertPortEquals(new int[] {2, 3}, manager.getAllConnections().getBackups());
@@ -131,7 +132,7 @@ public class QueueManagerJUnitTest {
     factory.addConnection(1, 23, 2);
     factory.addConnection(1, 11, 3);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 2, 2000, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
     assertPortEquals(2, manager.getAllConnections().getPrimary());
     assertPortEquals(new int[] {3, 1}, manager.getAllConnections().getBackups());
@@ -148,7 +149,7 @@ public class QueueManagerJUnitTest {
     factory.addError();
     factory.addConnection(0, 0, 3);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 3, 2000, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
 
     // The primary queue can be set before we try to fill in for all of the failed backup servers,
@@ -181,7 +182,7 @@ public class QueueManagerJUnitTest {
     factory.addConnection(0, 0, 2);
     factory.addConnection(0, 0, 3);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 3, 2000, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
 
     // wait for backups to come online.
@@ -210,7 +211,7 @@ public class QueueManagerJUnitTest {
     factory.addConnection(0, 0, 4);
     factory.addConnection(0, 0, 5);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 3, 2000, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
     assertPortEquals(1, manager.getAllConnections().getPrimary());
     assertPortEquals(new int[] {2, 3, 4}, manager.getAllConnections().getBackups());
@@ -228,7 +229,7 @@ public class QueueManagerJUnitTest {
     factory.addConnection(0, 0, 1);
     factory.addConnection(0, 0, 2);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 2, 20, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
     assertPortEquals(1, manager.getAllConnections().getPrimary());
     assertPortEquals(new int[] {2}, manager.getAllConnections().getBackups());
@@ -253,7 +254,7 @@ public class QueueManagerJUnitTest {
   public void testWaitForPrimary() throws Exception {
     factory.addConnection(0, 0, 1);
     manager = new QueueManagerImpl(pool, endpoints, source, factory, 2, 20, logger,
-        ClientProxyMembershipID.getNewProxyMembership(ds));
+        ClientProxyMembershipID.getNewProxyMembership(distributedSystem));
     manager.start(background);
     manager.getAllConnections().getPrimary().destroy();
 

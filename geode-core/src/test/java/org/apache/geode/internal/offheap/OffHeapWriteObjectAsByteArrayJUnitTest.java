@@ -35,7 +35,7 @@ public class OffHeapWriteObjectAsByteArrayJUnitTest {
   @Before
   public void setUp() throws Exception {
     MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-        new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+        new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
   }
 
   @After

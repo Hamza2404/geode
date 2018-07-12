@@ -60,7 +60,7 @@ public interface MemoryAllocator {
 
   long getTotalMemory();
 
-  OffHeapMemoryStats getStats();
+  OffHeapStorageStats getStats();
 
   /**
    * This allocator will no longer be used so free up any system memory that belongs to it.

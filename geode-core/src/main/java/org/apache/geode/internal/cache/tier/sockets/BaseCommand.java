@@ -157,7 +157,7 @@ public abstract class BaseCommand implements Command {
   public void execute(Message clientMessage, ServerConnection serverConnection,
       SecurityService securityService) {
     // Read the request and update the statistics
-    long start = DistributionStats.getStatTime();
+    long start = System.nanoTime();
     if (EntryLogger.isEnabled() && serverConnection != null) {
       EntryLogger.setSource(serverConnection.getMembershipID(), "c2s");
     }

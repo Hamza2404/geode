@@ -38,9 +38,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.internal.statistics.StatArchiveReader.ResourceInst;
 import org.apache.geode.internal.statistics.StatArchiveReader.StatValue;
 
@@ -101,7 +101,7 @@ public class StatArchiveWithConsecutiveResourceInstGenerator {
 
   @After
   public void tearDown() throws Exception {
-    StatisticsTypeFactoryImpl.clear();
+//    StatisticsTypeFactoryImpl.clear();
   }
 
   @Test

@@ -29,6 +29,7 @@ import org.apache.geode.distributed.internal.ClusterDistributionManager;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.DistributionMessage;
 import org.apache.geode.distributed.internal.DistributionStats;
+import org.apache.geode.distributed.internal.DistributionStatsImpl;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.ReplyMessage;
 import org.apache.geode.distributed.internal.ReplyProcessor21;
@@ -254,8 +255,8 @@ public class TXRemoteCommitMessage extends TXMessage {
 
     @Override
     public void process(DistributionMessage msg) {
-      if (DistributionStats.enableClockStats) {
-        this.start = DistributionStats.getStatTime();
+      if (DistributionStatsImpl.enableClockStats) {
+        this.start = System.nanoTime();
       }
       if (msg instanceof TXRemoteCommitReplyMessage) {
         TXRemoteCommitReplyMessage reply = (TXRemoteCommitReplyMessage) msg;
@@ -271,7 +272,7 @@ public class TXRemoteCommitMessage extends TXMessage {
      */
     public TXCommitMessage waitForResponse() throws RemoteOperationException {
       waitForRemoteResponse();
-      if (DistributionStats.enableClockStats) {
+      if (DistributionStatsImpl.enableClockStats) {
         getDistributionManager().getStats().incReplyHandOffTime(this.start);
       }
       return commitMessage;

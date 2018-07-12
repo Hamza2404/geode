@@ -35,7 +35,7 @@ import org.apache.geode.cache.query.internal.InternalQueryService;
 import org.apache.geode.internal.cache.CacheServerImpl;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.tier.sockets.AcceptorImpl;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.management.internal.beans.stats.MBeanStatsMonitor;
 
 /**
@@ -72,7 +72,7 @@ public class CacheServerBridgeClientMembershipRegressionTest {
     monitor = mock(MBeanStatsMonitor.class);
 
     when(cache.getQueryService()).thenReturn(mock(InternalQueryService.class));
-    when(acceptor.getStats()).thenReturn(mock(CacheServerStats.class));
+    when(acceptor.getStats()).thenReturn(mock(CacheServerStatsImpl.class));
   }
 
   @After

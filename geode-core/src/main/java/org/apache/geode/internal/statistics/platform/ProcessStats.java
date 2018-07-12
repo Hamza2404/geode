@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * Abstracts the process statistics that are common on all platforms. This is necessary for

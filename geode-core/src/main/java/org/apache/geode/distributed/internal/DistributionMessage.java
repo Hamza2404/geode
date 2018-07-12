@@ -123,7 +123,7 @@ public abstract class DistributionMessage implements DataSerializableFixedID, Cl
   ////////////////////// Constructors //////////////////////
 
   protected DistributionMessage() {
-    this.timeStamp = DistributionStats.getStatTime();
+    this.timeStamp = System.nanoTime();
   }
 
   ////////////////////// Static Helper Methods //////////////////////
@@ -355,8 +355,8 @@ public abstract class DistributionMessage implements DataSerializableFixedID, Cl
     }
     MessageDependencyMonitor.processingMessage(this);
     long time = 0;
-    if (DistributionStats.enableClockStats) {
-      time = DistributionStats.getStatTime();
+    if (DistributionStatsImpl.enableClockStats) {
+      time = System.nanoTime();
       dm.getStats().incMessageProcessingScheduleTime(time - getTimestamp());
     }
     setBreadcrumbsInReceiver();
@@ -393,7 +393,7 @@ public abstract class DistributionMessage implements DataSerializableFixedID, Cl
         dm.getStats().decMessagesBeingReceived(this.bytesRead);
       }
       dm.getStats().incProcessedMessages(1L);
-      if (DistributionStats.enableClockStats) {
+      if (DistributionStatsImpl.enableClockStats) {
         dm.getStats().incProcessedMessagesTime(time);
       }
       Breadcrumbs.clearBreadcrumb();
@@ -590,8 +590,8 @@ public abstract class DistributionMessage implements DataSerializableFixedID, Cl
    * @return the number of elapsed nanos since this message's last timestamp
    */
   public long resetTimestamp() {
-    if (DistributionStats.enableClockStats) {
-      long now = DistributionStats.getStatTime();
+    if (DistributionStatsImpl.enableClockStats) {
+      long now = System.nanoTime();
       long result = now - this.timeStamp;
       this.timeStamp = now;
       return result;

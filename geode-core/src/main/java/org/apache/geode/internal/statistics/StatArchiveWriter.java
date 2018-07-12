@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.GemFireIOException;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticDescriptor;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.internal.NanoTimer;
 import org.apache.geode.internal.i18n.LocalizedStrings;

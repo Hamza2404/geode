@@ -14,7 +14,7 @@
  */
 package org.apache.geode.management.internal.beans;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.asyncqueue.AsyncEventQueue;
 import org.apache.geode.cache.asyncqueue.internal.AsyncEventQueueImpl;
 import org.apache.geode.cache.asyncqueue.internal.AsyncEventQueueStats;

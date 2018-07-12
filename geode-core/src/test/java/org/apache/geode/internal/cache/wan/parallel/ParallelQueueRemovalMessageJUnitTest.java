@@ -66,6 +66,9 @@ import org.apache.geode.internal.cache.wan.AbstractGatewaySender;
 import org.apache.geode.internal.cache.wan.GatewaySenderEventImpl;
 import org.apache.geode.internal.cache.wan.GatewaySenderStats;
 import org.apache.geode.internal.statistics.DummyStatisticsFactory;
+import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.fake.Fakes;
 
 public class ParallelQueueRemovalMessageJUnitTest {
@@ -106,7 +109,7 @@ public class ParallelQueueRemovalMessageJUnitTest {
     EvictionAttributesImpl ea = (EvictionAttributesImpl) EvictionAttributes
         .createLRUMemoryAttributes(100, null, EvictionAction.OVERFLOW_TO_DISK);
     EvictionController eviction = AbstractEvictionController.create(ea, false,
-        this.cache.getDistributedSystem(), "queueRegion");
+        this.cache.getDistributedSystem().getStatisticsFactory(), "queueRegion");
     when(this.queueRegion.getEvictionController()).thenReturn(eviction);
   }
 
@@ -116,7 +119,8 @@ public class ParallelQueueRemovalMessageJUnitTest {
     when(this.queueRegion.getParallelGatewaySender()).thenReturn(this.sender);
     when(this.sender.getQueues()).thenReturn(null);
     when(this.sender.getDispatcherThreads()).thenReturn(1);
-    stats = new GatewaySenderStats(new DummyStatisticsFactory(), "ln");
+    stats = StatsFactory.createGatewaySenderStatsImpl(new DummyStatisticsFactory(
+        (StatisticsFactory) new StatisticsTypeFactoryImpl()), "ln");
     when(this.sender.getStatistics()).thenReturn(stats);
   }
 

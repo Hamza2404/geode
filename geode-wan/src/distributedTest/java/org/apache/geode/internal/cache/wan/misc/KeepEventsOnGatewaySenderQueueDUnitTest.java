@@ -29,6 +29,7 @@ import org.apache.geode.cache.partition.PartitionRegionHelper;
 import org.apache.geode.cache.wan.GatewayReceiver;
 import org.apache.geode.internal.cache.CacheServerImpl;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.wan.AbstractGatewaySender;
 import org.apache.geode.internal.cache.wan.GatewayReceiverStats;
 import org.apache.geode.internal.cache.wan.WANTestBase;

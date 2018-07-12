@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.geode.CancelCriterion;
-import org.apache.geode.Statistics;
+import org.apache.geode.internal.cache.eviction.EvictionStats;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.CacheWriter;
 import org.apache.geode.cache.CacheWriterException;
 import org.apache.geode.cache.EntryNotFoundException;

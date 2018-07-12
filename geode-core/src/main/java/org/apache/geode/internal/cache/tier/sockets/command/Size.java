@@ -24,6 +24,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -61,7 +62,7 @@ public class Size extends BaseCommand {
     serverConnection.setAsTrue(REQUIRES_RESPONSE);
 
     long oldStart = start;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incReadSizeRequestTime(start - oldStart);
     // Retrieve the data from the message parts
     Part regionNamePart = clientMessage.getPart(0);
@@ -118,7 +119,7 @@ public class Size extends BaseCommand {
             regionName);
       }
       serverConnection.setAsTrue(RESPONDED);
-      stats.incWriteSizeResponseTime(DistributionStats.getStatTime() - start);
+      stats.incWriteSizeResponseTime(System.nanoTime() - start);
     }
   }
 }

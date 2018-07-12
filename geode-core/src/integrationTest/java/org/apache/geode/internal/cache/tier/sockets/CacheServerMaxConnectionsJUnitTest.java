@@ -26,8 +26,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
@@ -137,8 +137,8 @@ public class CacheServerMaxConnectionsJUnitTest {
   public void testMaxCnxLimit() throws Exception {
     PORT = createServer();
     createProxyAndRegionForClient();
-    StatisticsType st = this.system.findType("CacheServerStats");
-    final Statistics s = this.system.findStatisticsByType(st)[0];
+    StatisticsType st = this.system.getStatisticsFactory().findType("CacheServerStats");
+    final Statistics s = this.system.getStatisticsFactory().findStatisticsByType(st)[0];
     assertEquals(0, s.getInt("currentClients"));
     assertEquals(0, s.getInt("currentClientConnections"));
     Connection[] cnxs = new Connection[MAX_CNXS];

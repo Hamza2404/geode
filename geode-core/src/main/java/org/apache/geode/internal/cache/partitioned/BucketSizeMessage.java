@@ -189,7 +189,7 @@ public class BucketSizeMessage extends PartitionMessage {
       if (logger.isTraceEnabled(LogMarker.DM_VERBOSE)) {
         logger.trace(LogMarker.DM_VERBOSE, "{} Processed {}", processor, this);
       }
-      dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+      dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
     }
 
     public int getDSFID() {

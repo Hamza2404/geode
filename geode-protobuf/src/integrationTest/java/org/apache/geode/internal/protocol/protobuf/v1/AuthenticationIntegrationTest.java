@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.server.CacheServer;
@@ -250,8 +250,8 @@ public class AuthenticationIntegrationTest {
         parseSimpleHandshakeResponseFromInput();
     assertFalse(authenticationResponse.getAuthenticated());
 
-    Statistics[] stats = cache.getDistributedSystem()
-        .findStatisticsByType(cache.getDistributedSystem().findType(PROTOBUF_CLIENT_STATISTICS));
+    Statistics[] stats = cache.getDistributedSystem().getStatisticsFactory()
+        .findStatisticsByType(cache.getDistributedSystem().getStatisticsFactory().findType(PROTOBUF_CLIENT_STATISTICS));
     assertEquals(1, stats[0].getLong("authenticationFailures"));
     verifyConnectionClosed();
   }

@@ -15,10 +15,11 @@
 
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.statistics.HostStatHelper;
 import org.apache.geode.internal.statistics.LocalStatisticsImpl;
@@ -33,33 +34,28 @@ public class LinuxProcessStats {
   static final int imageSizeINT = 0;
   static final int rssSizeINT = 1;
 
-  private static final StatisticsType myType;
+  private StatisticsType myType;
 
-  private static void checkOffset(String name, int offset) {
+  private void checkOffset(String name, int offset) {
     int id = myType.nameToId(name);
     Assert.assertTrue(offset == id,
         "Expected the offset for " + name + " to be " + offset + " but it was " + id);
   }
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    myType = f.createType("LinuxProcessStats", "Statistics on a Linux process.",
+  private void initializeStats(StatisticsFactory factory) {
+    myType = factory.createType("LinuxProcessStats", "Statistics on a Linux process.",
         new StatisticDescriptor[] {
-            f.createIntGauge("imageSize", "The size of the process's image in megabytes.",
+            factory.createIntGauge("imageSize", "The size of the process's image in megabytes.",
                 "megabytes"),
-            f.createIntGauge("rssSize",
+            factory.createIntGauge("rssSize",
                 "The size of the process's resident set size in megabytes. (assumes PAGESIZE=4096, specify -Dgemfire.statistics.linux.pageSize=<pagesize> to adjust)",
                 "megabytes"),});
     checkOffset("imageSize", imageSizeINT);
     checkOffset("rssSize", rssSizeINT);
   }
 
-  private LinuxProcessStats() {
-    // no instances allowed
-  }
-
-  public static StatisticsType getType() {
-    return myType;
+  public LinuxProcessStats(StatisticsFactory statisticsFactory) {
+    initializeStats(statisticsFactory);
   }
 
   /**
@@ -80,4 +76,7 @@ public class LinuxProcessStats {
     };
   }
 
+  public StatisticsType getType() {
+    return myType;
+  }
 }

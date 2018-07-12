@@ -41,7 +41,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.CacheWriterException;
 import org.apache.geode.cache.DiskAccessException;
 import org.apache.geode.cache.DiskStore;
@@ -193,7 +193,7 @@ public class OplogJUnitTest extends DiskRegionTestingBase {
       long id = oplog.getOplogId();
       oplog.close();
 
-      StatisticsFactory factory = cache.getDistributedSystem();
+      StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
       Oplog newOplog =
           new Oplog(id, dr.getOplogSet(), new DirectoryHolder(factory, dirs[0], 1000, 0));
       dr.getOplogSet().setChild(newOplog);
@@ -214,7 +214,7 @@ public class OplogJUnitTest extends DiskRegionTestingBase {
       Oplog oplog = dr.testHook_getChild();
       long id = oplog.getOplogId();
       oplog.close();
-      StatisticsFactory factory = cache.getDistributedSystem();
+      StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
       Oplog newOplog =
           new Oplog(id, dr.getOplogSet(), new DirectoryHolder(factory, dirs[0], 1000, 2));
       dr.setChild(newOplog);

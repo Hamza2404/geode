@@ -30,7 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.server.CacheServer;
 import org.apache.geode.distributed.ConfigurationProperties;
 import org.apache.geode.distributed.Locator;
@@ -156,8 +156,8 @@ public class LocatorConnectionDUnitTest extends JUnit4CacheTestCase {
     InternalDistributedSystem distributedSystem =
         (InternalDistributedSystem) Locator.getLocator().getDistributedSystem();
 
-    Statistics[] protobufServerStats = distributedSystem.findStatisticsByType(
-        distributedSystem.findType(ProtobufClientStatistics.PROTOBUF_CLIENT_STATISTICS));
+    Statistics[] protobufServerStats = distributedSystem.getStatisticsFactory().findStatisticsByType(
+        distributedSystem.getStatisticsFactory().findType(ProtobufClientStatistics.PROTOBUF_CLIENT_STATISTICS));
     assertEquals(1, protobufServerStats.length);
     return protobufServerStats[0];
   }

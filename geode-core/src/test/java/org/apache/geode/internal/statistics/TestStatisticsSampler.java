@@ -16,7 +16,7 @@ package org.apache.geode.internal.statistics;
 
 import java.util.List;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * @since GemFire 7.0

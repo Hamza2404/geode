@@ -15,11 +15,11 @@
 
 package org.apache.geode.internal.cache.tier.sockets;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
@@ -34,7 +34,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 public class CacheClientProxyStats implements MessageStats {
 
   /** The <code>StatisticsType</code> of the statistics */
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   /** Name of the messages received statistic */
   private static final String MESSAGES_RECEIVED = "messagesReceived";
@@ -60,73 +60,71 @@ public class CacheClientProxyStats implements MessageStats {
   private static final String CQ_COUNT = "cqCount";
 
   /** Id of the messages received statistic */
-  private static final int _messagesReceivedId;
+  private int _messagesReceivedId;
   /** Id of the messages queued statistic */
-  private static final int _messagesQueuedId;
+  private int _messagesQueuedId;
   /** Id of the messages not queued because originator statistic */
-  private static final int _messagesNotQueuedOriginatorId;
+  private int _messagesNotQueuedOriginatorId;
   /** Id of the messages not queued because not interested statistic */
-  private static final int _messagesNotQueuedNotInterestedId;
+  private int _messagesNotQueuedNotInterestedId;
   /** Id of the messages failed to be queued statistic */
-  private static final int _messagesFailedQueuedId;
+  private int _messagesFailedQueuedId;
   /** Id of the message queue size statistic */
-  private static final int _messageQueueSizeId;
+  private int _messageQueueSizeId;
   /** Id of the messages removed statistic */
-  private static final int _messagesProcessedId;
+  private int _messagesProcessedId;
   /** Id of the message processing time statistic */
-  private static final int _messageProcessingTimeId;
+  private int _messageProcessingTimeId;
   /** Id of the prepared delta messages statistic */
-  private static final int _deltaMessagesSentId;
+  private int _deltaMessagesSentId;
   /** Id of the prepared delta messages statistic */
-  private static final int _deltaFullMessagesSentId;
+  private int _deltaFullMessagesSentId;
   /** Id of the CQ count statistic */
-  private static final int _cqCountId;
-  private static final int _sentBytesId;
+  private int _cqCountId;
+  private int _sentBytesId;
 
   /**
    * Static initializer to create and initialize the <code>StatisticsType</code>
    */
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "CacheClientProxyStatistics";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
+    _type = factory.createType(statName, statName, new StatisticDescriptor[] {
+        factory.createIntCounter(MESSAGES_RECEIVED, "Number of client messages received.", "operations"),
 
-    _type = f.createType(statName, statName, new StatisticDescriptor[] {
-        f.createIntCounter(MESSAGES_RECEIVED, "Number of client messages received.", "operations"),
-
-        f.createIntCounter(MESSAGES_QUEUED, "Number of client messages added to the message queue.",
+        factory.createIntCounter(MESSAGES_QUEUED, "Number of client messages added to the message queue.",
             "operations"),
 
-        f.createIntCounter(MESSAGES_FAILED_QUEUED,
+        factory.createIntCounter(MESSAGES_FAILED_QUEUED,
             "Number of client messages attempted but failed to be added to the message queue.",
             "operations"),
 
-        f.createIntCounter(MESSAGES_NOT_QUEUED_ORIGINATOR,
+        factory.createIntCounter(MESSAGES_NOT_QUEUED_ORIGINATOR,
             "Number of client messages received but not added to the message queue because the receiving proxy represents the client originating the message.",
             "operations"),
 
-        f.createIntCounter(MESSAGES_NOT_QUEUED_NOT_INTERESTED,
+        factory.createIntCounter(MESSAGES_NOT_QUEUED_NOT_INTERESTED,
             "Number of client messages received but not added to the message queue because the client represented by the receiving proxy was not interested in the message's key.",
             "operations"),
 
-        f.createIntGauge(MESSAGE_QUEUE_SIZE, "Size of the message queue.", "operations"),
+        factory.createIntGauge(MESSAGE_QUEUE_SIZE, "Size of the message queue.", "operations"),
 
-        f.createIntCounter(MESSAGES_PROCESSED,
+        factory.createIntCounter(MESSAGES_PROCESSED,
             "Number of client messages removed from the message queue and sent.", "operations"),
 
-        f.createLongCounter(MESSAGE_PROCESSING_TIME,
+        factory.createLongCounter(MESSAGE_PROCESSING_TIME,
             "Total time spent sending messages to clients.", "nanoseconds"),
 
-        f.createIntCounter(DELTA_MESSAGES_SENT,
+        factory.createIntCounter(DELTA_MESSAGES_SENT,
             "Number of client messages containing only delta bytes dispatched to the client.",
             "operations"),
 
-        f.createIntCounter(DELTA_FULL_MESSAGES_SENT,
+        factory.createIntCounter(DELTA_FULL_MESSAGES_SENT,
             "Number of client messages dispatched in reponse to failed delta at client.",
             "operations"),
 
-        f.createLongCounter(CQ_COUNT, "Number of CQs on the client.", "operations"),
-        f.createLongCounter("sentBytes", "Total number of bytes sent to client.", "bytes"),});
+        factory.createLongCounter(CQ_COUNT, "Number of CQs on the client.", "operations"),
+        factory.createLongCounter("sentBytes", "Total number of bytes sent to client.", "bytes"),});
 
     // Initialize id fields
     _messagesReceivedId = _type.nameToId(MESSAGES_RECEIVED);
@@ -158,6 +156,7 @@ public class CacheClientProxyStats implements MessageStats {
    * @param name The name of the <code>Statistics</code>
    */
   public CacheClientProxyStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this._stats = factory.createAtomicStatistics(_type, "cacheClientProxyStats-" + name);
   }
 
@@ -333,7 +332,7 @@ public class CacheClientProxyStats implements MessageStats {
    * @return the current time (ns)
    */
   public long startTime() {
-    return DistributionStats.getStatTime();
+    return System.nanoTime();
   }
 
   /**
@@ -343,7 +342,7 @@ public class CacheClientProxyStats implements MessageStats {
    *        the message processing time).
    */
   public void endMessage(long start) {
-    long ts = DistributionStats.getStatTime();
+    long ts = System.nanoTime();
 
     // Increment number of notifications
     this._stats.incInt(_messagesProcessedId, 1);

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.query.CqClosedException;
 import org.apache.geode.cache.query.CqEvent;
 import org.apache.geode.cache.query.CqException;
@@ -42,6 +42,7 @@ import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Represents the CqQuery object. Implements CqQuery API and CqAttributeMutator.
@@ -123,8 +124,8 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   void updateCqCreateStats() {
     // Initialize the VSD statistics
-    StatisticsFactory factory = cqService.getCache().getDistributedSystem();
-    this.stats = new CqQueryVsdStats(factory, getServerCqName());
+    StatisticsFactory factory = cqService.getCache().getDistributedSystem().getStatisticsFactory();
+    this.stats = StatsFactory.createCqQueryVsdStatsImpl(factory, getServerCqName());
     this.cqStats = new CqStatisticsImpl(this);
 
     // Update statistics with CQ creation.
@@ -317,7 +318,18 @@ public abstract class CqQueryImpl implements InternalCqQuery {
    * @param cqEvent object
    */
   void updateStats(CqEvent cqEvent) {
-    this.stats.updateStats(cqEvent); // Stats for VSD
+    if (cqEvent.getQueryOperation() == null) {
+      return;
+    }
+    if (cqEvent.getQueryOperation().isCreate()) {
+      this.stats.incNumInserts();
+    }
+    if (cqEvent.getQueryOperation().isUpdate()) {
+      this.stats.incNumUpdates();
+    }
+    if (cqEvent.getQueryOperation().isDestroy()) {
+      this.stats.incNumDeletes();
+    }
   }
 
   /**

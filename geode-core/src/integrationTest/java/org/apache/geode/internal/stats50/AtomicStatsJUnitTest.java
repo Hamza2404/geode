@@ -25,10 +25,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
@@ -46,14 +46,14 @@ public class AtomicStatsJUnitTest {
     props.setProperty(MCAST_PORT, "0");
     // props.setProperty("statistic-sample-rate", "60000");
     props.setProperty(STATISTIC_SAMPLING_ENABLED, "false");
-    DistributedSystem ds = DistributedSystem.connect(props);
+    DistributedSystem distributedSystem = DistributedSystem.connect(props);
 
     String statName = "TestStats";
     String statDescription = "Tests stats";
 
     final String statDesc = "blah blah blah";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
+    StatisticsTypeFactory f = new StatisticsTypeFactoryImpl();
 
     StatisticsType type = f.createType(statName, statDescription, new StatisticDescriptor[] {
         f.createIntGauge("stat", statDesc, "bottles of beer on the wall"),});
@@ -102,7 +102,7 @@ public class AtomicStatsJUnitTest {
       thread1.start();
       thread3.start();
       for (int i = 0; i < 5000; i++) {
-        Statistics stats = ds.createAtomicStatistics(type, "stats");
+        Statistics stats = distributedSystem.getStatisticsFactory().createAtomicStatistics(type, "stats");
         statsRef.set(stats);
         beforeIncrement.await();
         afterIncrement.await();
@@ -111,7 +111,7 @@ public class AtomicStatsJUnitTest {
       }
 
     } finally {
-      ds.disconnect();
+      distributedSystem.disconnect();
     }
   }
 }

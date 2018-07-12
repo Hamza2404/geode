@@ -22,6 +22,7 @@ import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
 import org.apache.geode.internal.security.SecurityService;
@@ -91,7 +92,7 @@ public class GetCQStats extends BaseCQCommand {
     serverConnection.setAsTrue(RESPONDED);
 
     long oldStart = start;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incProcessGetCqStatsTime(start - oldStart);
   }
 

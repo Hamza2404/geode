@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 /**
  * Defines the minimal contract for a StatisticsSampler. This is used by classes that need to

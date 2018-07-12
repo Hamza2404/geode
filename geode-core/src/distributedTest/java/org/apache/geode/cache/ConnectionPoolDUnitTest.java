@@ -62,7 +62,7 @@ import org.apache.geode.internal.cache.EntryExpiryTask;
 import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.cache.PoolStats;
 import org.apache.geode.internal.cache.tier.sockets.CacheClientNotifier;
-import org.apache.geode.internal.cache.tier.sockets.CacheClientNotifierStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheClientNotifierStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LocalLogWriter;
@@ -868,7 +868,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
             LocalRegion region = (LocalRegion) getRootRegion().getSubregion(name);
             PoolStats stats = ((PoolImpl) PoolManager.find(poolName)).getStats();
             int oldConnects = stats.getConnects();
-            int oldDisConnects = stats.getDisConnects();
+            int oldDisConnects = stats.getDisconnects();
             try {
               for (int i = 0; i < numberOfKeys; i++) {
                 String actual = (String) region.get("key-" + i);
@@ -881,7 +881,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
               }
             }
             int newConnects = stats.getConnects();
-            int newDisConnects = stats.getDisConnects();
+            int newDisConnects = stats.getDisconnects();
             // System.out.println("#### new connects/disconnects :" + newConnects + ":" +
             // newDisConnects);
             if (newConnects != oldConnects && newDisConnects != oldDisConnects) {
@@ -3505,7 +3505,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
           public void run2() throws CacheException {
             for (Iterator bi = getCache().getCacheServers().iterator(); bi.hasNext();) {
               CacheServerImpl bsi = (CacheServerImpl) bi.next();
-              final CacheClientNotifierStats ccnStats =
+              final CacheClientNotifierStatsImpl ccnStats =
                   bsi.getAcceptor().getCacheClientNotifier().getStats();
               WaitCriterion ev = new WaitCriterion() {
                 public boolean done() {
@@ -4434,7 +4434,7 @@ public class ConnectionPoolDUnitTest extends JUnit4CacheTestCase {
       srv1.invoke(new CacheSerializableRunnable("Validate Server1 update") {
         public void run2() throws CacheException {
           CacheClientNotifier ccn = CacheClientNotifier.getInstance();
-          final CacheClientNotifierStats ccnStats = ccn.getStats();
+          final CacheClientNotifierStatsImpl ccnStats = ccn.getStats();
           final int eventCount = ccnStats.getEvents();
           Region r = getRootRegion(name);
           assertNotNull(r);

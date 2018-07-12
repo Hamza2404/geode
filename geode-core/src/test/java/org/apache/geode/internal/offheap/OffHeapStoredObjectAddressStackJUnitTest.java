@@ -83,7 +83,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
 
       OffHeapStoredObjectAddressStack stack =
@@ -100,7 +100,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
 
       OffHeapStoredObjectAddressStack stack = new OffHeapStoredObjectAddressStack();
@@ -117,7 +117,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
 
       long addr = chunk.getAddress();
@@ -146,7 +146,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
 
       long addr = chunk.getAddress();
@@ -166,7 +166,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
 
       long addr = chunk.getAddress();
@@ -186,7 +186,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
       int chunkSize = chunk.getSize();
 
@@ -206,7 +206,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
       int chunkSize = chunk.getSize();
 
@@ -247,7 +247,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
       int chunkSize = chunk.getSize();
 
@@ -269,7 +269,7 @@ public class OffHeapStoredObjectAddressStackJUnitTest {
     try {
       MemoryAllocatorImpl ma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+              new NullOffHeapStorageStats(), new SlabImpl[] {slab});
       OffHeapStoredObject chunk = (OffHeapStoredObject) ma.allocate(100);
       int chunkSize = chunk.getSize();
 

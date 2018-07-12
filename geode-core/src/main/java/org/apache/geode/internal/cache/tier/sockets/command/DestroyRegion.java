@@ -27,6 +27,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -58,7 +59,7 @@ public class DestroyRegion extends BaseCommand {
 
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadDestroyRegionRequestTime(start - oldStart);
     }
     // Retrieve the data from the message parts
@@ -169,7 +170,7 @@ public class DestroyRegion extends BaseCommand {
     // Update the statistics and write the reply
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessDestroyRegionTime(start - oldStart);
     }
     writeReply(clientMessage, serverConnection);
@@ -178,7 +179,7 @@ public class DestroyRegion extends BaseCommand {
       logger.debug("{}: Sent destroy region response for region {}", serverConnection.getName(),
           regionName);
     }
-    stats.incWriteDestroyRegionResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWriteDestroyRegionResponseTime(System.nanoTime() - start);
   }
 
 }

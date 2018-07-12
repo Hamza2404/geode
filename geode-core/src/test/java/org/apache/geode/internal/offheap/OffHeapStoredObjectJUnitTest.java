@@ -71,7 +71,7 @@ public class OffHeapStoredObjectJUnitTest extends AbstractStoredObjectTestBase {
   @Before
   public void setUp() {
     OutOfOffHeapMemoryListener ooohml = mock(OutOfOffHeapMemoryListener.class);
-    OffHeapMemoryStats stats = mock(OffHeapMemoryStats.class);
+    OffHeapStorageStats stats = mock(OffHeapStorageStats.class);
 
     ma = MemoryAllocatorImpl.create(ooohml, stats, 3, OffHeapStorage.MIN_SLAB_SIZE * 3,
         OffHeapStorage.MIN_SLAB_SIZE);

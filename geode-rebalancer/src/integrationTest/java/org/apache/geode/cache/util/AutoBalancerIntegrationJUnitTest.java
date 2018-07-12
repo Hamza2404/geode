@@ -72,7 +72,7 @@ public class AutoBalancerIntegrationJUnitTest {
     if (cache != null && !cache.isClosed()) {
       try {
         final HostStatSampler statSampler =
-            ((InternalDistributedSystem) cache.getDistributedSystem()).getStatSampler();
+            ((InternalDistributedSystem) cache.getDistributedSystem()).getInternalDistributedSystemStats().getStatSampler();
         cache.close();
         // wait for the stat sampler to stand down
         await().atMost(TIMEOUT_SECONDS, SECONDS).until(isAlive(statSampler), equalTo(false));

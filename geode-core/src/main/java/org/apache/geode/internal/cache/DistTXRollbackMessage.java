@@ -37,6 +37,7 @@ import org.apache.geode.distributed.internal.ClusterDistributionManager;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.DistributionMessage;
 import org.apache.geode.distributed.internal.DistributionStats;
+import org.apache.geode.distributed.internal.DistributionStatsImpl;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.ReplyException;
 import org.apache.geode.distributed.internal.ReplyMessage;
@@ -240,8 +241,8 @@ public class DistTXRollbackMessage extends TXMessage {
 
     @Override
     public void process(DistributionMessage msg) {
-      if (DistributionStats.enableClockStats) {
-        this.start = DistributionStats.getStatTime();
+      if (DistributionStatsImpl.enableClockStats) {
+        this.start = System.nanoTime();
       }
       if (msg instanceof DistTXRollbackReplyMessage) {
         DistTXRollbackReplyMessage reply = (DistTXRollbackReplyMessage) msg;
@@ -258,7 +259,7 @@ public class DistTXRollbackMessage extends TXMessage {
      */
     public Boolean waitForResponse() throws RemoteOperationException {
       waitForRemoteResponse();
-      if (DistributionStats.enableClockStats) {
+      if (DistributionStatsImpl.enableClockStats) {
         getDistributionManager().getStats().incReplyHandOffTime(this.start);
       }
       return rollbackState;

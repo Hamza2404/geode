@@ -34,9 +34,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.i18n.LogWriterI18n;
 import org.apache.geode.internal.statistics.FakeValueMonitor;
 import org.apache.geode.internal.statistics.ValueMonitor;

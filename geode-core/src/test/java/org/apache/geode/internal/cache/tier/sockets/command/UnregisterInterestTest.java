@@ -44,7 +44,7 @@ import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.cache.tier.sockets.AcceptorImpl;
 import org.apache.geode.internal.cache.tier.sockets.CacheClientNotifier;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -79,7 +79,7 @@ public class UnregisterInterestTest {
   @Mock
   private InternalCache cache;
   @Mock
-  private CacheServerStats cacheServerStats;
+  private CacheServerStatsImpl cacheServerStats;
   @Mock
   private Message replyMessage;
   @Mock

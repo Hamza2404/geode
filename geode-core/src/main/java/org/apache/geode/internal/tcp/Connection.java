@@ -61,6 +61,7 @@ import org.apache.geode.distributed.internal.DistributionConfigImpl;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.DistributionMessage;
 import org.apache.geode.distributed.internal.DistributionStats;
+import org.apache.geode.distributed.internal.DistributionStatsImpl;
 import org.apache.geode.distributed.internal.ReplyException;
 import org.apache.geode.distributed.internal.ReplyMessage;
 import org.apache.geode.distributed.internal.ReplyProcessor21;
@@ -1350,7 +1351,7 @@ public class Connection implements Runnable {
      * Called when a message writer needs the current fillBatchBuffer flushed
      */
     public void flushBuffer(ByteBuffer bb) {
-      final long start = DistributionStats.getStatTime();
+      final long start = System.nanoTime();
       try {
         synchronized (this) {
           synchronized (batchLock) {
@@ -1401,7 +1402,7 @@ public class Connection implements Runnable {
               wait(BATCH_FLUSH_MS); // spurious wakeup ok
             }
             if (this.flushNeeded || fillBatchBuffer.position() > (BATCH_BUFFER_SIZE / 2)) {
-              final long start = DistributionStats.getStatTime();
+              final long start = System.nanoTime();
               synchronized (batchLock) {
                 // This is the only block of code that will swap
                 // the buffer references
@@ -1458,7 +1459,7 @@ public class Connection implements Runnable {
     if (SOCKET_WRITE_DISABLED) {
       return;
     }
-    final long start = DistributionStats.getStatTime();
+    final long start = System.nanoTime();
     try {
       ByteBuffer dst = null;
       Assert.assertTrue(src.remaining() <= BATCH_BUFFER_SIZE, "Message size(" + src.remaining()
@@ -1467,7 +1468,7 @@ public class Connection implements Runnable {
         synchronized (this.batchLock) {
           dst = this.fillBatchBuffer;
           if (src.remaining() <= dst.remaining()) {
-            final long copyStart = DistributionStats.getStatTime();
+            final long copyStart = System.nanoTime();
             dst.put(src);
             this.owner.getConduit().getStats().incBatchCopyTime(copyStart);
             return;
@@ -2057,7 +2058,7 @@ public class Connection implements Runnable {
           stopped = true;
           continue;
         }
-        // long recvNanos = DistributionStats.getStatTime();
+        // long recvNanos = System.nanoTime();
         len = ((headerBytes[MSG_HEADER_SIZE_OFFSET] & 0xff) * 0x1000000)
             + ((headerBytes[MSG_HEADER_SIZE_OFFSET + 1] & 0xff) * 0x10000)
             + ((headerBytes[MSG_HEADER_SIZE_OFFSET + 2] & 0xff) * 0x100)
@@ -2092,7 +2093,7 @@ public class Connection implements Runnable {
           if (this.handshakeRead) {
             if (msgType == NORMAL_MSG_TYPE) {
               // DMStats stats = this.owner.getConduit().stats;
-              // long start = DistributionStats.getStatTime();
+              // long start = System.nanoTime();
               this.owner.getConduit().getStats().incMessagesBeingReceived(true, len);
               dis.initialize(bytes, this.remoteVersion);
               DistributionMessage msg = null;
@@ -2108,7 +2109,7 @@ public class Connection implements Runnable {
                 }
                 // stats.incBatchCopyTime(start);
                 try {
-                  // start = DistributionStats.getStatTime();
+                  // start = System.nanoTime();
                   if (!dispatchMessage(msg, len, myDirectAck)) {
                     continue;
                   }
@@ -2718,7 +2719,7 @@ public class Connection implements Runnable {
   private boolean addToQueue(ByteBuffer buffer, DistributionMessage msg, boolean force)
       throws ConnectionException {
     final DMStats stats = this.owner.getConduit().getStats();
-    long start = DistributionStats.getStatTime();
+    long start = System.nanoTime();
     try {
       ConflationKey ck = null;
       if (msg != null) {
@@ -2823,8 +2824,8 @@ public class Connection implements Runnable {
         return true;
       }
     } finally {
-      if (DistributionStats.enableClockStats) {
-        stats.incAsyncQueueAddTime(DistributionStats.getStatTime() - start);
+      if (DistributionStatsImpl.enableClockStats) {
+        stats.incAsyncQueueAddTime(System.nanoTime() - start);
       }
     }
   }
@@ -2878,7 +2879,7 @@ public class Connection implements Runnable {
   private ByteBuffer takeFromOutgoingQueue() throws InterruptedException {
     ByteBuffer result = null;
     final DMStats stats = this.owner.getConduit().getStats();
-    long start = DistributionStats.getStatTime();
+    long start = System.nanoTime();
     try {
       synchronized (this.outgoingQueue) {
         if (this.disconnectRequested) {
@@ -2920,8 +2921,8 @@ public class Connection implements Runnable {
       }
       return result;
     } finally {
-      if (DistributionStats.enableClockStats) {
-        stats.incAsyncQueueRemoveTime(DistributionStats.getStatTime() - start);
+      if (DistributionStatsImpl.enableClockStats) {
+        stats.incAsyncQueueRemoveTime(System.nanoTime() - start);
       }
     }
   }
@@ -3491,7 +3492,7 @@ public class Connection implements Runnable {
 
     while (!done && connected) {
       this.owner.getConduit().getCancelCriterion().checkCancelInProgress(null);
-      // long startTime = DistributionStats.getStatTime();
+      // long startTime = System.nanoTime();
       int remaining = nioInputBuffer.remaining();
       if (nioLengthSet || remaining >= MSG_HEADER_BYTES) {
         if (!nioLengthSet) {

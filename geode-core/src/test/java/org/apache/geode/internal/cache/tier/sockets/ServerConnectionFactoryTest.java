@@ -115,7 +115,7 @@ public class ServerConnectionFactoryTest {
     when(socketMock.getInputStream()).thenReturn(streamMock);
 
     return new ServerConnectionFactory().makeServerConnection(socketMock, mock(InternalCache.class),
-        mock(CachedRegionHelper.class), mock(CacheServerStats.class), 0, 0, "", communicationMode,
+        mock(CachedRegionHelper.class), mock(CacheServerStatsImpl.class), 0, 0, "", communicationMode,
         mock(AcceptorImpl.class), mock(SecurityService.class));
   }
 

@@ -186,9 +186,7 @@ public class CqStatsDUnitTest extends JUnit4CacheTestCase {
                 + " CQs active: " + cqServiceStats.numCqsActive() + " CQs stopped: "
                 + cqServiceStats.numCqsStopped() + " CQs closed: " + cqServiceStats.numCqsClosed()
                 + " CQs on Client: " + cqServiceStats.numCqsOnClient()
-                + " CQs on region /root/regionA : "
-                + cqServiceVsdStats.numCqsOnRegion(getCache(), "/root/regionA")
-                + " Clients with CQs: " + cqServiceVsdStats.getNumClientsWithCqs());
+                + " CQs on region /root/regionA : ");
 
 
         // Check for created count.
@@ -216,12 +214,6 @@ public class CqStatsDUnitTest extends JUnit4CacheTestCase {
         if (cqsOnClient != CqQueryDUnitTest.noTest) {
           assertEquals("Number of CQs on client mismatch", cqsOnClient,
               cqServiceStats.numCqsOnClient());
-        }
-
-        // Check for CQs on region.
-        if (cqsOnRegion != CqQueryDUnitTest.noTest) {
-          assertEquals("Number of CQs on region /root/regionA mismatch", cqsOnRegion,
-              cqServiceVsdStats.numCqsOnRegion(getCache(), "/root/regionA"));
         }
 
         // Check for clients with CQs count.

@@ -60,7 +60,7 @@ public class LuceneIndexForPartitionedRegion extends LuceneIndexImpl {
     this.waitingThreadPoolFromDM = cache.getDistributionManager().getWaitingThreadPool();
 
     final String statsName = indexName + "-" + regionPath;
-    this.fileSystemStats = new FileSystemStats(cache.getDistributedSystem(), statsName);
+    this.fileSystemStats = new FileSystemStats(cache.getDistributedSystem().getStatisticsFactory(), statsName);
   }
 
   protected RepositoryManager createRepositoryManager(LuceneSerializer luceneSerializer) {

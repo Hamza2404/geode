@@ -36,6 +36,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -75,7 +76,7 @@ public class PutAll extends BaseCommand {
     serverConnection.setAsTrue(REQUIRES_RESPONSE);
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadPutAllRequestTime(start - oldStart);
     }
 
@@ -225,7 +226,7 @@ public class PutAll extends BaseCommand {
       return;
     } finally {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessPutAllTime(start - oldStart);
     }
 
@@ -238,6 +239,6 @@ public class PutAll extends BaseCommand {
       logger.debug("{}: Sent putAll response back to {} for region {}", serverConnection.getName(),
           serverConnection.getSocketString(), regionName);
     }
-    stats.incWritePutAllResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWritePutAllResponseTime(System.nanoTime() - start);
   }
 }

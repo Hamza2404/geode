@@ -38,6 +38,7 @@ import org.apache.geode.distributed.internal.ResourceEvent;
 import org.apache.geode.internal.cache.DiskStoreImpl;
 import org.apache.geode.internal.cache.DiskStoreStats;
 import org.apache.geode.internal.cache.InternalCache;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.rules.ServerStarterRule;
 
 public class ManagementAdapterTest {
@@ -53,7 +54,7 @@ public class ManagementAdapterTest {
   @Before
   public void before() {
     cache = serverRule.getCache();
-    doReturn(new DiskStoreStats(cache.getInternalDistributedSystem(), "disk-stats")).when(diskStore)
+    doReturn(StatsFactory.createDiskStoreStatsImpl(cache.getInternalDistributedSystem().getStatisticsFactory(), "disk-stats")).when(diskStore)
         .getStats();
     doReturn(new File[] {}).when(diskStore).getDiskDirs();
   }

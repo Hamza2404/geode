@@ -14,12 +14,12 @@
  */
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 
 /**
  * Instances of this interface provide methods that create operating system instances of
- * {@link org.apache.geode.Statistics}. Its for internal use only.
+ * {@link Statistics}. Its for internal use only.
  *
  * {@link org.apache.geode.distributed.DistributedSystem} is an OS statistics factory.
  * <P>

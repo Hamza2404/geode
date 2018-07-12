@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.apache.geode.DataSerializable;
 import org.apache.geode.DataSerializer;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.internal.admin.GemFireVM;
 import org.apache.geode.internal.admin.Stat;
 import org.apache.geode.internal.admin.StatResource;

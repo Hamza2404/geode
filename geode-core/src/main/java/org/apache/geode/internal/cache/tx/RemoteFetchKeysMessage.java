@@ -277,7 +277,7 @@ public class RemoteFetchKeysMessage extends RemoteOperationMessage {
         logger.trace(LogMarker.DM_VERBOSE, "{} Remote-processed {}", processor, this);
       }
 
-      dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+      dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
     }
 
     @Override

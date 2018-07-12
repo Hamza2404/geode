@@ -74,7 +74,7 @@ public class ServerConnectionTest {
   private ServerSideHandshake handshake;
   private InternalCache cache;
   private SecurityService securityService;
-  private CacheServerStats stats;
+  private CacheServerStatsImpl stats;
 
   @Before
   public void setUp() throws IOException {
@@ -89,7 +89,7 @@ public class ServerConnectionTest {
     cache = mock(InternalCache.class);
     securityService = mock(SecurityService.class);
 
-    stats = mock(CacheServerStats.class);
+    stats = mock(CacheServerStatsImpl.class);
 
     handshake = mock(ServerSideHandshake.class);
     when(handshake.getEncryptor()).thenReturn(mock(Encryptor.class));

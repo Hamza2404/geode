@@ -1040,7 +1040,7 @@ public class PRHARedundancyProvider {
 
   public void finishIncompleteBucketCreation(int bucketId) {
     String partitionName = null;
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     if (this.prRegion.isFixedPartitionedRegion()) {
       FixedPartitionAttributesImpl fpa =
           PartitionedRegionHelper.getFixedPartitionAttributesForBucket(this.prRegion, bucketId);

@@ -1,4 +1,5 @@
 /*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for additional information regarding
  * copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the
@@ -42,9 +43,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import org.apache.geode.CancelCriterion;
-import org.apache.geode.Statistics;
 import org.apache.geode.internal.statistics.platform.LinuxProcFsStatistics;
 import org.apache.geode.internal.statistics.platform.LinuxSystemStats;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.test.junit.categories.StatisticsTest;
 
 /**
@@ -77,7 +79,8 @@ public class LinuxSystemStatsTest extends StatSamplerTestCase {
         + File.separator + SimpleStatSampler.DEFAULT_ARCHIVE_FILE_NAME);
     LinuxProcFsStatistics.init();
     initStats();
-    StatisticsTypeImpl statisticsType = (StatisticsTypeImpl) LinuxSystemStats.getType();
+    StatisticsTypeImpl statisticsType = (StatisticsTypeImpl) new LinuxSystemStats(
+        (StatisticsFactory) new StatisticsTypeFactoryImpl()).getType();
     LocalStatisticsImpl statistics = (LocalStatisticsImpl) getStatisticsManager()
         .createStatistics(statisticsType, statisticsType.getName());
 
@@ -88,7 +91,6 @@ public class LinuxSystemStatsTest extends StatSamplerTestCase {
 
   @After
   public void tearDown() throws Exception {
-    StatisticsTypeFactoryImpl.clear();
     if (this.statisticsFactory != null) {
       this.statisticsFactory.close();
     }

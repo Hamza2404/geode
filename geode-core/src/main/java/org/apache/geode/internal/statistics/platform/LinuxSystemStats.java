@@ -15,9 +15,10 @@
 
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
@@ -83,151 +84,150 @@ public class LinuxSystemStats {
   static final int loadAverage15DOUBLE = 1;
   static final int loadAverage5DOUBLE = 2;
 
-  private static final StatisticsType myType;
+  private StatisticsType myType;
 
-  private static void checkOffset(String name, int offset) {
+  private void checkOffset(String name, int offset) {
     int id = myType.nameToId(name);
     Assert.assertTrue(offset == id,
         "Expected the offset for " + name + " to be " + offset + " but it was " + id);
   }
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    myType = f.createType("LinuxSystemStats", "Statistics on a Linux machine.",
+  private void initializeStats(StatisticsFactory factory) {
+    myType = factory.createType("LinuxSystemStats", "Statistics on a Linux machine.",
         new StatisticDescriptor[] {
-            f.createIntGauge("allocatedSwap",
+            factory.createIntGauge("allocatedSwap",
                 "The number of megabytes of swap space have actually been written to. Swap space must be reserved before it can be allocated.",
                 "megabytes"),
-            f.createIntGauge("bufferMemory",
+            factory.createIntGauge("bufferMemory",
                 "The number of megabytes of memory allocated to buffers.", "megabytes"),
-            f.createIntGauge("sharedMemory",
+            factory.createIntGauge("sharedMemory",
                 "The number of megabytes of shared memory on the machine.", "megabytes", true),
-            f.createIntGauge("cpuActive",
+            factory.createIntGauge("cpuActive",
                 "The percentage of the total available time that has been used in a non-idle state.",
                 "%"),
-            f.createIntGauge("cpuIdle",
+            factory.createIntGauge("cpuIdle",
                 "The percentage of the total available time that has been spent sleeping.", "%",
                 true),
-            f.createIntGauge("cpuNice",
+            factory.createIntGauge("cpuNice",
                 "The percentage of the total available time that has been used to execute user code in processes with low priority.",
                 "%"),
-            f.createIntGauge("cpuSystem",
+            factory.createIntGauge("cpuSystem",
                 "The percentage of the total available time that has been used to execute system (i.e. kernel) code.",
                 "%"),
-            f.createIntGauge("cpuUser",
+            factory.createIntGauge("cpuUser",
                 "The percentage of the total available time that has been used to execute user code.",
                 "%"),
-            f.createIntGauge("iowait",
+            factory.createIntGauge("iowait",
                 "The percentage of the total available time that has been used to wait for I/O to complete.",
                 "%"),
-            f.createIntGauge("irq",
+            factory.createIntGauge("irq",
                 "The percentage of the total available time that has been used servicing  interrupts.",
                 "%"),
-            f.createIntGauge("softirq",
+            factory.createIntGauge("softirq",
                 "The percentage of the total available time that has been used servicing softirqs.",
                 "%"),
-            f.createIntGauge("cpus", "The number of online cpus on the local machine.", "items"),
-            f.createIntGauge("freeMemory",
+            factory.createIntGauge("cpus", "The number of online cpus on the local machine.", "items"),
+            factory.createIntGauge("freeMemory",
                 "The number of megabytes of unused memory on the machine.", "megabytes", true),
-            f.createIntGauge("physicalMemory",
+            factory.createIntGauge("physicalMemory",
                 "The actual amount of total physical memory on the machine.", "megabytes", true),
-            f.createIntGauge("processes",
+            factory.createIntGauge("processes",
                 "The number of processes in the computer at the time of data collection.  Notice that this is an instantaneous count, not an average over the time interval.  Each process represents the running of a program.",
                 "processes"),
-            f.createIntGauge("unallocatedSwap",
+            factory.createIntGauge("unallocatedSwap",
                 "The number of megabytes of swap space that have not been allocated.", "megabytes",
                 true),
-            f.createIntGauge("cachedMemory",
+            factory.createIntGauge("cachedMemory",
                 "The number of megabytes of memory used for the file system cache.", "megabytes",
                 true),
-            f.createIntGauge("dirtyMemory",
+            factory.createIntGauge("dirtyMemory",
                 "The number of megabytes of memory in the file system cache that need to be written.",
                 "megabytes", true),
-            f.createIntGauge("cpuNonUser",
+            factory.createIntGauge("cpuNonUser",
                 "The percentage of total available time that has been used to execute non-user code.(includes system, iowait, irq, softirq etc.)",
                 "%"),
-            f.createIntGauge("cpuSteal",
+            factory.createIntGauge("cpuSteal",
                 "Steal time is the amount of time the operating system wanted to execute, but was not allowed to by the hypervisor.",
                 "%"),
 
-            f.createLongCounter("loopbackPackets",
+            factory.createLongCounter("loopbackPackets",
                 "The number of network packets sent (or received) on the loopback interface",
                 "packets", false),
-            f.createLongCounter("loopbackBytes",
+            factory.createLongCounter("loopbackBytes",
                 "The number of network bytes sent (or received) on the loopback interface", "bytes",
                 false),
-            f.createLongCounter("recvPackets",
+            factory.createLongCounter("recvPackets",
                 "The total number of network packets received (excluding loopback)", "packets",
                 false),
-            f.createLongCounter("recvBytes",
+            factory.createLongCounter("recvBytes",
                 "The total number of network bytes received (excluding loopback)", "bytes", false),
-            f.createLongCounter("recvErrors", "The total number of network receive errors",
+            factory.createLongCounter("recvErrors", "The total number of network receive errors",
                 "errors", false),
-            f.createLongCounter("recvDrops", "The total number network receives dropped", "packets",
+            factory.createLongCounter("recvDrops", "The total number network receives dropped", "packets",
                 false),
-            f.createLongCounter("xmitPackets",
+            factory.createLongCounter("xmitPackets",
                 "The total number of network packets transmitted (excluding loopback)", "packets",
                 false),
-            f.createLongCounter("xmitBytes",
+            factory.createLongCounter("xmitBytes",
                 "The total number of network bytes transmitted (excluding loopback)", "bytes",
                 false),
-            f.createLongCounter("xmitErrors", "The total number of network transmit errors",
+            factory.createLongCounter("xmitErrors", "The total number of network transmit errors",
                 "errors", false),
-            f.createLongCounter("xmitDrops", "The total number of network transmits dropped",
+            factory.createLongCounter("xmitDrops", "The total number of network transmits dropped",
                 "packets", false),
-            f.createLongCounter("xmitCollisions", "The total number of network transmit collisions",
+            factory.createLongCounter("xmitCollisions", "The total number of network transmit collisions",
                 "collisions", false),
-            f.createLongCounter("contextSwitches",
+            factory.createLongCounter("contextSwitches",
                 "The total number of context switches from one thread to another on the computer.  Thread switches can occur either inside of a single process or across processes.  A thread switch may be caused either by one thread asking another for information, or by a thread being preempted by another, higher priority thread becoming ready to run.",
                 "operations", false),
-            f.createLongCounter("processCreates",
+            factory.createLongCounter("processCreates",
                 "The total number of times a process has been created.", "operations", false),
-            f.createLongCounter("pagesPagedIn",
+            factory.createLongCounter("pagesPagedIn",
                 "The total number of pages that have been brought into memory from disk by the operating system's memory manager.",
                 "pages", false),
-            f.createLongCounter("pagesPagedOut",
+            factory.createLongCounter("pagesPagedOut",
                 "The total number of pages that have been flushed from memory to disk by the operating system's memory manager.",
                 "pages", false),
-            f.createLongCounter("pagesSwappedIn",
+            factory.createLongCounter("pagesSwappedIn",
                 "The total number of swap pages that have been read in from disk by the operating system's memory manager.",
                 "pages", false),
-            f.createLongCounter("pagesSwappedOut",
+            factory.createLongCounter("pagesSwappedOut",
                 "The total number of swap pages that have been written out to disk by the operating system's memory manager.",
                 "pages", false),
-            f.createLongCounter("diskReadsCompleted",
+            factory.createLongCounter("diskReadsCompleted",
                 "The total number disk read operations completed successfully", "ops"),
-            f.createLongCounter("diskReadsMerged",
+            factory.createLongCounter("diskReadsMerged",
                 "The total number disk read operations that were able to be merge with adjacent reads for efficiency",
                 "ops"),
-            f.createLongCounter("diskBytesRead",
+            factory.createLongCounter("diskBytesRead",
                 "The total number bytes read from disk successfully", "bytes"),
-            f.createLongCounter("diskTimeReading",
+            factory.createLongCounter("diskTimeReading",
                 "The total number of milliseconds spent reading from disk", "milliseconds"),
-            f.createLongCounter("diskWritesCompleted",
+            factory.createLongCounter("diskWritesCompleted",
                 "The total number disk write operations completed successfully", "ops"),
-            f.createLongCounter("diskWritesMerged",
+            factory.createLongCounter("diskWritesMerged",
                 "The total number disk write operations that were able to be merge with adjacent reads for efficiency",
                 "ops"),
-            f.createLongCounter("diskBytesWritten",
+            factory.createLongCounter("diskBytesWritten",
                 "The total number bytes written to disk successfully", "bytes"),
-            f.createLongCounter("diskTimeWriting",
+            factory.createLongCounter("diskTimeWriting",
                 "The total number of milliseconds spent writing to disk", "milliseconds"),
-            f.createLongGauge("diskOpsInProgress",
+            factory.createLongGauge("diskOpsInProgress",
                 "The current number of disk operations in progress", "ops"),
-            f.createLongCounter("diskTimeInProgress",
+            factory.createLongCounter("diskTimeInProgress",
                 "The total number of milliseconds spent with disk ops in progress", "milliseconds"),
-            f.createLongCounter("diskTime",
+            factory.createLongCounter("diskTime",
                 "The total number of milliseconds that measures both completed disk operations and any accumulating backlog of in progress ops.",
                 "milliseconds"),
 
 
-            f.createDoubleGauge("loadAverage1",
+            factory.createDoubleGauge("loadAverage1",
                 "The average number of threads in the run queue or waiting for disk I/O over the last minute.",
                 "threads"),
-            f.createDoubleGauge("loadAverage15",
+            factory.createDoubleGauge("loadAverage15",
                 "The average number of threads in the run queue or waiting for disk I/O over the last fifteen minutes.",
                 "threads"),
-            f.createDoubleGauge("loadAverage5",
+            factory.createDoubleGauge("loadAverage5",
                 "The average number of threads in the run queue or waiting for disk I/O over the last five minutes.",
                 "threads"),});
 
@@ -286,11 +286,11 @@ public class LinuxSystemStats {
     checkOffset("loadAverage5", loadAverage5DOUBLE);
   }
 
-  private LinuxSystemStats() {
-    // no instances allowed
+  public LinuxSystemStats(StatisticsFactory factory) {
+    initializeStats(factory);
   }
 
-  public static StatisticsType getType() {
+  public StatisticsType getType(){
     return myType;
   }
 }

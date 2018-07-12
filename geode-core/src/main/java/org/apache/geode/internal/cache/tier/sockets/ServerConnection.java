@@ -259,8 +259,8 @@ public abstract class ServerConnection implements Runnable {
    * client over a given <code>Socket</code>.
    */
   public ServerConnection(Socket socket, InternalCache internalCache, CachedRegionHelper helper,
-      CacheServerStats stats, int hsTimeout, int socketBufferSize, String communicationModeStr,
-      byte communicationMode, Acceptor acceptor, SecurityService securityService) {
+                          CacheServerStats stats, int hsTimeout, int socketBufferSize, String communicationModeStr,
+                          byte communicationMode, Acceptor acceptor, SecurityService securityService) {
 
     StringBuilder buffer = new StringBuilder(100);
     if (((AcceptorImpl) acceptor).isGatewayReceiver()) {

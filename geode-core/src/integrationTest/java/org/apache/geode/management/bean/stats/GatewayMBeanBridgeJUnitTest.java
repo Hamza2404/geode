@@ -25,6 +25,7 @@ import org.apache.geode.internal.NanoTimer;
 import org.apache.geode.internal.cache.wan.AbstractGatewaySender;
 import org.apache.geode.internal.cache.wan.GatewaySenderStats;
 import org.apache.geode.management.internal.beans.GatewaySenderMBeanBridge;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.JMXTest;
 
 @Category({JMXTest.class})
@@ -39,7 +40,7 @@ public class GatewayMBeanBridgeJUnitTest extends MBeanStatsTestCase {
   private AbstractGatewaySender sender;
 
   public void init() {
-    senderStats = new GatewaySenderStats(system, "test");
+    senderStats = StatsFactory.createGatewaySenderStatsImpl(system.getStatisticsFactory(), "test");
 
     sender = Mockito.mock(AbstractGatewaySender.class);
     Mockito.when(sender.getStatistics()).thenReturn(senderStats);

@@ -76,7 +76,7 @@ public abstract class BaseCommandQuery extends BaseCommand {
 
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadQueryRequestTime(start - oldStart);
     }
 
@@ -187,7 +187,7 @@ public abstract class BaseCommandQuery extends BaseCommand {
         }
 
         long oldStart = start;
-        start = DistributionStats.getStatTime();
+        start = System.nanoTime();
         stats.incProcessQueryTime(start - oldStart);
 
         if (sendResults) {
@@ -284,7 +284,7 @@ public abstract class BaseCommandQuery extends BaseCommand {
       logger.debug("{}: Sent query response for query {}", servConn.getName(), queryString);
     }
 
-    stats.incWriteQueryResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWriteQueryResponseTime(System.nanoTime() - start);
     return true;
   }
 

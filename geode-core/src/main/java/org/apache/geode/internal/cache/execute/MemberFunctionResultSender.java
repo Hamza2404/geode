@@ -118,10 +118,10 @@ public class MemberFunctionResultSender implements InternalResultSender {
           // call a synchronized method as local node is also waiting to send lastResult
           lastResult(oneResult, rc, false, true, this.dm.getDistributionManagerId());
         }
-        FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
+        FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
       }
     }
-    FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
+    FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
   }
 
   private synchronized void lastResult(Object oneResult, ResultCollector collector,
@@ -176,9 +176,9 @@ public class MemberFunctionResultSender implements InternalResultSender {
       } else {
         reply.addResult(memberID, oneResult);
       }
-      FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
+      FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
     }
-    FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
+    FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
   }
 
   public void sendResult(Object oneResult) {
@@ -206,10 +206,10 @@ public class MemberFunctionResultSender implements InternalResultSender {
         }
       } else {
         this.rc.addResult(this.dm.getDistributionManagerId(), oneResult);
-        FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
+        FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReceived();
       }
       // incrementing result sent stats.
-      FunctionStats.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
+      FunctionStatsImpl.getFunctionStats(function.getId(), this.dm.getSystem()).incResultsReturned();
     }
   }
 

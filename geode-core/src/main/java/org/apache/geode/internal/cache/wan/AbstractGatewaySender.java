@@ -77,6 +77,7 @@ import org.apache.geode.internal.offheap.Releasable;
 import org.apache.geode.internal.offheap.annotations.Released;
 import org.apache.geode.internal.offheap.annotations.Retained;
 import org.apache.geode.internal.offheap.annotations.Unretained;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Abstract implementation of both Serial and Parallel GatewaySender. It handles common
@@ -266,7 +267,7 @@ public abstract class AbstractGatewaySender implements GatewaySender, Distributi
       this.stopper = new Stopper(cache.getCancelCriterion());
       this.senderAdvisor = GatewaySenderAdvisor.createGatewaySenderAdvisor(this);
       if (!this.isForInternalUse()) {
-        this.statistics = new GatewaySenderStats(cache.getDistributedSystem(), id);
+        this.statistics = StatsFactory.createGatewaySenderStatsImpl(cache.getDistributedSystem().getStatisticsFactory(), id);
       }
       initializeEventIdIndex();
     }
@@ -1205,7 +1206,7 @@ public abstract class AbstractGatewaySender implements GatewaySender, Distributi
       // Create a stats holder for the meta data stats
       final HasCachePerfStats statsHolder = new HasCachePerfStats() {
         public CachePerfStats getCachePerfStats() {
-          return new CachePerfStats(cache.getDistributedSystem(), META_DATA_REGION_NAME);
+          return StatsFactory.createCachePerfStatsImpl(cache.getDistributedSystem().getStatisticsFactory(), META_DATA_REGION_NAME);
         }
       };
 

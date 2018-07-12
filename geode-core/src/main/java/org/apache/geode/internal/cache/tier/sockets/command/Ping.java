@@ -43,7 +43,7 @@ public class Ping extends BaseCommand {
     if (isDebugEnabled) {
       logger.debug("{}: rcv tx: {} from {} rcvTime: {}", serverConnection.getName(),
           clientMessage.getTransactionId(), serverConnection.getSocketString(),
-          (DistributionStats.getStatTime() - start));
+          (System.nanoTime() - start));
     }
     ClientHealthMonitor chm = ClientHealthMonitor.getInstance();
     if (chm != null)

@@ -39,7 +39,7 @@ import org.apache.geode.cache.operations.KeySetOperationContext;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.cache.tier.CachedRegionHelper;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ChunkedMessage;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
@@ -96,7 +96,7 @@ public class KeySetTest {
     when(this.regionNamePart.getString()).thenReturn(REGION_NAME);
 
     when(this.serverConnection.getCache()).thenReturn(this.cache);
-    when(this.serverConnection.getCacheServerStats()).thenReturn(mock(CacheServerStats.class));
+    when(this.serverConnection.getCacheServerStats()).thenReturn(mock(CacheServerStatsImpl.class));
     when(this.serverConnection.getAuthzRequest()).thenReturn(this.authzRequest);
     when(this.serverConnection.getCachedRegionHelper()).thenReturn(mock(CachedRegionHelper.class));
     when(this.serverConnection.getChunkedResponseMessage()).thenReturn(this.chunkedResponseMessage);

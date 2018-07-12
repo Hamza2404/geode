@@ -32,7 +32,7 @@ import org.apache.geode.cache.query.internal.cq.InternalCqQuery;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.cache.tier.sockets.AcceptorImpl;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ChunkedMessage;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
@@ -65,7 +65,7 @@ public class CQUnitTestRule extends ExternalResource {
     regionsInQuery.add(regionName);
 
     when(connection.getCachedRegionHelper()).thenReturn(crHelper);
-    when(connection.getCacheServerStats()).thenReturn(mock(CacheServerStats.class));
+    when(connection.getCacheServerStats()).thenReturn(mock(CacheServerStatsImpl.class));
     when(connection.getAcceptor()).thenReturn(mock(AcceptorImpl.class));
     when(connection.getChunkedResponseMessage()).thenReturn(mock(ChunkedMessage.class));
     when(message.getPart(anyInt())).thenReturn(part);

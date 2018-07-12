@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.geode.DataSerializer;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.InternalDistributedSystem.StatisticsVisitor;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
@@ -42,29 +42,23 @@ public class FetchStatsResponse extends AdminResponse {
    */
   public static FetchStatsResponse create(DistributionManager dm,
       InternalDistributedMember recipient, final String statisticsTypeName) {
-    FetchStatsResponse m = new FetchStatsResponse();
-    m.setRecipient(recipient);
+    FetchStatsResponse fetchStatsResponse = new FetchStatsResponse();
+    fetchStatsResponse.setRecipient(recipient);
     List<RemoteStatResource> statList = new ArrayList<RemoteStatResource>();
     // get vm-local stats
     // call visitStatistics to fix for bug 40358
     if (statisticsTypeName == null) {
-      dm.getSystem().visitStatistics(new StatisticsVisitor() {
-        public void visit(Statistics s) {
+      dm.getSystem().visitStatistics(s -> statList.add(new RemoteStatResource(s)));
+    } else {
+      dm.getSystem().visitStatistics(s -> {
+        if (s.getType().getName().equals(statisticsTypeName)) {
           statList.add(new RemoteStatResource(s));
         }
       });
-    } else {
-      dm.getSystem().visitStatistics(new StatisticsVisitor() {
-        public void visit(Statistics s) {
-          if (s.getType().getName().equals(statisticsTypeName)) {
-            statList.add(new RemoteStatResource(s));
-          }
-        }
-      });
     }
-    m.stats = new RemoteStatResource[statList.size()];
-    m.stats = (RemoteStatResource[]) statList.toArray(m.stats);
-    return m;
+    fetchStatsResponse.stats = new RemoteStatResource[statList.size()];
+    fetchStatsResponse.stats = statList.toArray(fetchStatsResponse.stats);
+    return fetchStatsResponse;
   }
 
   @Override
@@ -85,7 +79,7 @@ public class FetchStatsResponse extends AdminResponse {
   @Override
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     super.fromData(in);
-    stats = (RemoteStatResource[]) DataSerializer.readObject(in);
+    stats = DataSerializer.readObject(in);
   }
 
   /**

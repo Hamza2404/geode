@@ -281,7 +281,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
           (CacheServerImpl) (new ArrayList(cache.getCacheServers()).get(0));
       AcceptorImpl ai = currentServer.getAcceptor();
       CacheClientNotifier notifier = ai.getCacheClientNotifier();
-      CacheClientNotifierStats stats = notifier.getStats();
+      CacheClientNotifierStatsImpl stats = notifier.getStats();
       logger.info("Stats:" + "\nDurableReconnectionCount:" + stats.get_durableReconnectionCount()
           + "\nQueueDroppedCount" + stats.get_queueDroppedCount()
           + "\nEventsEnqueuedWhileClientAwayCount" + stats.get_eventEnqueuedWhileClientAwayCount());
@@ -299,7 +299,7 @@ public class DurableClientStatsDUnitTest extends JUnit4DistributedTestCase {
           (CacheServerImpl) (new ArrayList(cache.getCacheServers()).get(0));
       AcceptorImpl ai = currentServer.getAcceptor();
       CacheClientNotifier notifier = ai.getCacheClientNotifier();
-      CacheClientNotifierStats stats = notifier.getStats();
+      CacheClientNotifierStatsImpl stats = notifier.getStats();
       logger.info("Stats:" + "\nDurableReconnectionCount:" + stats.get_durableReconnectionCount()
           + "\nQueueDroppedCount" + stats.get_queueDroppedCount()
           + "\nEventsEnqueuedWhileClientAwayCount" + stats.get_eventEnqueuedWhileClientAwayCount());

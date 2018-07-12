@@ -14,11 +14,11 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 
 /**
  * Statistics related to the statistic sampler.
@@ -33,39 +33,39 @@ public class StatSamplerStats {
   public static final String SAMPLE_CALLBACK_ERRORS = "sampleCallbackErrors"; // int
   public static final String SAMPLE_CALLBACK_DURATION = "sampleCallbackDuration"; // long
 
-  private static final StatisticsType samplerType;
-  private static final int sampleCountId;
-  private static final int sampleTimeId;
-  private static final int delayDurationId;
-  private static final int statResourcesId;
-  private static final int jvmPausesId;
-  private static final int sampleCallbacksId;
-  private static final int sampleCallbackErrorsId;
-  private static final int sampleCallbackDurationId;
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    samplerType = f.createType("StatSampler", "Stats on the statistic sampler.",
+  private  StatisticsType samplerType;
+  private int sampleCountId;
+  private int sampleTimeId;
+  private int delayDurationId;
+  private int statResourcesId;
+  private int jvmPausesId;
+  private int sampleCallbacksId;
+  private int sampleCallbackErrorsId;
+  private int sampleCallbackDurationId;
+  
+  private void initializeStats(StatisticsFactory factory) {
+    samplerType = factory.createType("StatSampler", "Stats on the statistic sampler.",
         new StatisticDescriptor[] {
-            f.createIntCounter(SAMPLE_COUNT, "Total number of samples taken by this sampler.",
+            factory.createIntCounter(SAMPLE_COUNT, "Total number of samples taken by this sampler.",
                 "samples", false),
-            f.createLongCounter(SAMPLE_TIME, "Total amount of time spent taking samples.",
+            factory.createLongCounter(SAMPLE_TIME, "Total amount of time spent taking samples.",
                 "milliseconds", false),
-            f.createIntGauge(DELAY_DURATION,
+            factory.createIntGauge(DELAY_DURATION,
                 "Actual duration of sampling delay taken before taking this sample.",
                 "milliseconds", false),
-            f.createIntGauge(STAT_RESOURCES,
+            factory.createIntGauge(STAT_RESOURCES,
                 "Current number of statistic resources being sampled by this sampler.", "resources",
                 false),
-            f.createIntCounter(JVM_PAUSES,
+            factory.createIntCounter(JVM_PAUSES,
                 "Total number of JVM pauses (which may or may not be full GC pauses) detected by this sampler. A JVM pause is defined as a system event which kept the statistics sampler thread from sampling for 3000 or more milliseconds. This threshold can be customized by setting the system property gemfire.statSamplerDelayThreshold (units are milliseconds).",
                 "jvmPauses", false),
-            f.createIntGauge(SAMPLE_CALLBACKS,
+            factory.createIntGauge(SAMPLE_CALLBACKS,
                 "Current number of statistics that are sampled using callbacks.", "resources",
                 false),
-            f.createIntCounter(SAMPLE_CALLBACK_ERRORS,
+            factory.createIntCounter(SAMPLE_CALLBACK_ERRORS,
                 "Total number of exceptions thrown by callbacks when performing sampling", "errors",
                 false),
-            f.createLongCounter(SAMPLE_CALLBACK_DURATION,
+            factory.createLongCounter(SAMPLE_CALLBACK_DURATION,
                 "Total amount of time invoking sampling callbacks", "milliseconds", false),});
     sampleCountId = samplerType.nameToId(SAMPLE_COUNT);
     sampleTimeId = samplerType.nameToId(SAMPLE_TIME);
@@ -79,8 +79,9 @@ public class StatSamplerStats {
 
   private final Statistics samplerStats;
 
-  public StatSamplerStats(StatisticsFactory f, long id) {
-    this.samplerStats = f.createStatistics(samplerType, "statSampler", id);
+  public StatSamplerStats(StatisticsFactory factory, long id) {
+    initializeStats(factory);
+    this.samplerStats = factory.createStatistics(samplerType, "statSampler", id);
   }
 
   public void tookSample(long nanosSpentWorking, int statResources, long nanosSpentSleeping) {

@@ -16,7 +16,7 @@ package org.apache.geode.management.internal.beans.stats;
 
 import java.lang.management.ManagementFactory;
 
-import org.apache.geode.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticDescriptor;
 import org.apache.geode.internal.statistics.StatisticId;
 import org.apache.geode.internal.statistics.StatisticNotFoundException;
 import org.apache.geode.internal.statistics.StatisticsNotification;

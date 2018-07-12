@@ -55,8 +55,8 @@ public abstract class MBeanStatsTestCase {
     props.setProperty(STATISTIC_SAMPLE_RATE, "60000");
 
     this.system = (InternalDistributedSystem) DistributedSystem.connect(props);
-    assertNotNull(this.system.getStatSampler());
-    assertNotNull(this.system.getStatSampler().waitForSampleCollector(TIMEOUT));
+    assertNotNull(this.system.getInternalDistributedSystemStats().getStatSampler());
+    assertNotNull(this.system.getInternalDistributedSystemStats().getStatSampler().waitForSampleCollector(TIMEOUT));
 
     new CacheFactory().create();
 
@@ -73,12 +73,12 @@ public abstract class MBeanStatsTestCase {
   }
 
   protected void waitForNotification() throws InterruptedException {
-    this.system.getStatSampler().waitForSample(TIMEOUT);
+    this.system.getInternalDistributedSystemStats().getStatSampler().waitForSample(TIMEOUT);
     Thread.sleep(SLEEP);
   }
 
   protected void sample() throws InterruptedException {
-    this.system.getStatSampler().getSampleCollector().sample(NanoTimer.getTime());
+    this.system.getInternalDistributedSystemStats().getStatSampler().getSampleCollector().sample(NanoTimer.getTime());
     Thread.sleep(SLEEP);
   }
 

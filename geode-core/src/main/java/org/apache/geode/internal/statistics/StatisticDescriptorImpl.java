@@ -14,9 +14,9 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 
 /**
@@ -278,7 +278,7 @@ public class StatisticDescriptorImpl implements StatisticDescriptor {
       default:
         throw new RuntimeException(
             LocalizedStrings.StatisticsImpl_UNEXPECTED_STAT_DESCRIPTOR_TYPE_CODE_0
-                .toLocalizedString(Byte.valueOf(this.typeCode)));
+                .toLocalizedString(this.typeCode));
     }
   }
 
@@ -315,22 +315,20 @@ public class StatisticDescriptorImpl implements StatisticDescriptor {
     if (this.typeCode != INT) {
       throw new IllegalArgumentException(
           LocalizedStrings.StatisticDescriptorImpl_THE_STATISTIC_0_WITH_ID_1_IS_OF_TYPE_2_AND_IT_WAS_EXPECTED_TO_BE_AN_INT
-              .toLocalizedString(new Object[] {getName(), Integer.valueOf(getId()),
-                  StatisticDescriptorImpl.getTypeCodeName(getTypeCode())}));
+              .toLocalizedString(getName(), getId(),
+                  StatisticDescriptorImpl.getTypeCodeName(getTypeCode())));
     }
     return this.id;
   }
 
   public int checkLong() {
     if (this.typeCode != LONG) {
-      StringBuffer sb = new StringBuffer();
-      sb.append("The statistic " + getName() + " with id ");
-      sb.append(getId());
-      sb.append(" is of type ");
-      sb.append(StatisticDescriptorImpl.getTypeCodeName(getTypeCode()));
-
-      sb.append(" and it was expected to be a long");
-      throw new IllegalArgumentException(sb.toString());
+      String sb = ("The statistic " + getName() + " with id ")
+          + getId()
+          + " is of type "
+          + StatisticDescriptorImpl.getTypeCodeName(getTypeCode())
+          + " and it was expected to be a long";
+      throw new IllegalArgumentException(sb);
     }
     return this.id;
   }
@@ -339,8 +337,8 @@ public class StatisticDescriptorImpl implements StatisticDescriptor {
     if (this.typeCode != DOUBLE) {
       throw new IllegalArgumentException(
           LocalizedStrings.StatisticDescriptorImpl_THE_STATISTIC_0_WITH_ID_1_IS_OF_TYPE_2_AND_IT_WAS_EXPECTED_TO_BE_A_DOUBLE
-              .toLocalizedString(new Object[] {getName(), Integer.valueOf(getId()),
-                  StatisticDescriptorImpl.getTypeCodeName(getTypeCode())}));
+              .toLocalizedString(getName(), getId(),
+                  StatisticDescriptorImpl.getTypeCodeName(getTypeCode())));
     }
     return this.id;
   }

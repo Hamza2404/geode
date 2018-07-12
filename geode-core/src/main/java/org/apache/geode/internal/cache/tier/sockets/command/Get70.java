@@ -32,6 +32,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
@@ -71,7 +72,7 @@ public class Get70 extends BaseCommand {
     // requiresResponse = true;
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadGetRequestTime(start - oldStart);
     }
     // Retrieve the data from the message parts
@@ -194,7 +195,7 @@ public class Get70 extends BaseCommand {
       data = securityService.postProcess(regionName, key, data, entry.isObject);
 
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessGetTime(start - oldStart);
 
       if (region instanceof PartitionedRegion) {
@@ -220,7 +221,7 @@ public class Get70 extends BaseCommand {
       logger.debug("{}: Wrote get response back to {} for region {} {}", serverConnection.getName(),
           serverConnection.getSocketString(), regionName, entry);
     }
-    stats.incWriteGetResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWriteGetResponseTime(System.nanoTime() - start);
 
 
   }

@@ -31,7 +31,7 @@ import org.mockito.MockitoAnnotations;
 import org.apache.geode.cache.Region;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.LocalRegion;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -73,7 +73,7 @@ public class ContainsKeyTest {
     InternalCache cache = mock(InternalCache.class);
     when(cache.getRegion(isA(String.class))).thenReturn(region);
 
-    CacheServerStats cacheServerStats = mock(CacheServerStats.class);
+    CacheServerStatsImpl cacheServerStats = mock(CacheServerStatsImpl.class);
 
     when(this.serverConnection.getCache()).thenReturn(cache);
     when(this.serverConnection.getCacheServerStats()).thenReturn(cacheServerStats);

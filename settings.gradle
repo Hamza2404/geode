@@ -43,6 +43,8 @@ include 'geode-experimental-driver'
 include 'geode-protobuf-messages'
 include 'extensions/session-testing-war'
 include 'geode-concurrency-test'
+include 'geode-micrometer-stats'
+include 'geode-common-stats'
 
 
 if (GradleVersion.current() < GradleVersion.version(minimumGradleVersion)) {
@@ -54,4 +56,5 @@ buildCache {
     enabled = true
   }
 }
+include 'geode-common-stats'
 

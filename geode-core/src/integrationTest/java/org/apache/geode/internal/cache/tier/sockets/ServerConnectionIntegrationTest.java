@@ -63,7 +63,7 @@ public class ServerConnectionIntegrationTest {
   private Socket socket;
   private InternalCache cache;
   private SecurityService securityService;
-  private CacheServerStats stats;
+  private CacheServerStatsImpl stats;
 
   @Before
   public void setUp() throws IOException {
@@ -78,7 +78,7 @@ public class ServerConnectionIntegrationTest {
     cache = mock(InternalCache.class);
     securityService = mock(SecurityService.class);
 
-    stats = mock(CacheServerStats.class);
+    stats = mock(CacheServerStatsImpl.class);
   }
 
   class TestMessage extends Message {
@@ -124,9 +124,9 @@ public class ServerConnectionIntegrationTest {
      * client over a given <code>Socket</code>.
      */
     public TestServerConnection(Socket socket, InternalCache internalCache,
-        CachedRegionHelper helper, CacheServerStats stats, int hsTimeout, int socketBufferSize,
-        String communicationModeStr, byte communicationMode, Acceptor acceptor,
-        SecurityService securityService) {
+                                CachedRegionHelper helper, CacheServerStatsImpl stats, int hsTimeout, int socketBufferSize,
+                                String communicationModeStr, byte communicationMode, Acceptor acceptor,
+                                SecurityService securityService) {
       super(socket, internalCache, helper, stats, hsTimeout, socketBufferSize, communicationModeStr,
           communicationMode, acceptor, securityService);
 
@@ -178,7 +178,7 @@ public class ServerConnectionIntegrationTest {
   @Test
   public void terminatingConnectionHandlesNewRequestsGracefully() throws Exception {
     when(cache.getCacheTransactionManager()).thenReturn(mock(TXManagerImpl.class));
-    ClientHealthMonitor.createInstance(cache, 100, mock(CacheClientNotifierStats.class));
+    ClientHealthMonitor.createInstance(cache, 100, mock(CacheClientNotifierStatsImpl.class));
     ClientHealthMonitor clientHealthMonitor = ClientHealthMonitor.getInstance();
     when(acceptor.getClientHealthMonitor()).thenReturn(clientHealthMonitor);
     when(acceptor.getConnectionListener()).thenReturn(mock(ConnectionListener.class));

@@ -98,6 +98,7 @@ import org.apache.geode.internal.security.SecurableCommunicationChannel;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.internal.util.ArrayUtils;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Implements the acceptor thread on the bridge server. Accepts connections from the edge and starts
@@ -529,9 +530,9 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
           LocalizedStrings.AcceptorImpl_CACHE_SERVER_CONNECTION_LISTENER_BOUND_TO_ADDRESS_0_WITH_BACKLOG_1,
           new Object[] {sockName, Integer.valueOf(backLog)}));
       if (isGatewayReceiver) {
-        this.stats = GatewayReceiverStats.createGatewayReceiverStats(sockName);
+        this.stats = (CacheServerStats) StatsFactory.createGatewayReceiverStatsImpl(null,sockName);
       } else {
-        this.stats = new CacheServerStats(sockName);
+        this.stats = new CacheServerStatsImpl(sockName);
       }
 
     }

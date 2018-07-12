@@ -97,7 +97,7 @@ public class ServerToClientFunctionResultSender65 extends ServerToClientFunction
       }
       this.msg.sendChunk(this.sc);
       this.sc.setAsTrue(Command.RESPONDED);
-      FunctionStats.getFunctionStats(fn.getId()).incResultsReturned();
+      FunctionStatsImpl.getFunctionStats(fn.getId()).incResultsReturned();
     } catch (IOException ex) {
       if (isOkayToSendResult()) {
         throw new FunctionException(
@@ -161,7 +161,7 @@ public class ServerToClientFunctionResultSender65 extends ServerToClientFunction
       }
       this.msg.sendChunk(this.sc);
       this.sc.setAsTrue(Command.RESPONDED);
-      FunctionStats.getFunctionStats(fn.getId()).incResultsReturned();
+      FunctionStatsImpl.getFunctionStats(fn.getId()).incResultsReturned();
     } catch (IOException ex) {
       if (isOkayToSendResult()) {
         throw new FunctionException(
@@ -207,7 +207,7 @@ public class ServerToClientFunctionResultSender65 extends ServerToClientFunction
       this.msg.setNumberOfParts(1);
       this.msg.addObjPart(result);
       this.msg.sendChunk(this.sc);
-      FunctionStats.getFunctionStats(fn.getId()).incResultsReturned();
+      FunctionStatsImpl.getFunctionStats(fn.getId()).incResultsReturned();
     } catch (IOException ex) {
       if (isOkayToSendResult()) {
         throw new FunctionException(
@@ -252,7 +252,7 @@ public class ServerToClientFunctionResultSender65 extends ServerToClientFunction
       this.msg.setNumberOfParts(1);
       this.msg.addObjPart(result);
       this.msg.sendChunk(this.sc);
-      FunctionStats.getFunctionStats(fn.getId()).incResultsReturned();
+      FunctionStatsImpl.getFunctionStats(fn.getId()).incResultsReturned();
     } catch (IOException ex) {
       if (isOkayToSendResult()) {
         throw new FunctionException(

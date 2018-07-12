@@ -91,7 +91,7 @@ public class LonerDistributionManager implements DistributionManager {
     this.localAddress = generateMemberId();
     this.allIds = Collections.singleton(localAddress);
     this.viewMembers = new ArrayList<>(allIds);
-    DistributionStats.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
+    DistributionStatsImpl.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
 
     Properties nonDefault = new Properties();
     DistributionConfigImpl distributionConfigImpl = new DistributionConfigImpl(nonDefault);
@@ -1000,7 +1000,7 @@ public class LonerDistributionManager implements DistributionManager {
     public void endUDPMsgDecryption(long start) {}
 
     @Override
-    public long getUDPMsgEncryptionTiime() {
+    public long getUDPMsgEncryptionTime() {
       return 0;
     }
 

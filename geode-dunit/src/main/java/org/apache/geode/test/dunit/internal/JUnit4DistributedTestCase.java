@@ -260,7 +260,7 @@ public abstract class JUnit4DistributedTestCase implements DistributedTestFixtur
   }
 
   public final InternalDistributedSystem basicGetSystem() {
-    return system;
+    return system ;
   }
 
   public final void nullSystem() { // TODO: delete

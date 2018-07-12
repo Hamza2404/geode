@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.distributed.DistributedLockService;
 import org.apache.geode.distributed.DistributedSystem;
@@ -62,6 +62,7 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.logging.log4j.LogMarker;
 import org.apache.geode.internal.util.StopWatch;
 import org.apache.geode.internal.util.concurrent.FutureResult;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Implements the distributed locking service with distributed lock grantors.
@@ -2910,12 +2911,12 @@ public class DLockService extends DistributedLockService {
   }
 
   /** Get or create static dlock stats */
-  protected static synchronized DistributedLockStats getOrCreateStats(DistributedSystem ds) {
+  protected static synchronized DistributedLockStats getOrCreateStats(DistributedSystem distributedSystem) {
     if (stats == DUMMY_STATS) {
-      Assert.assertTrue(ds != null, "Need an instance of InternalDistributedSystem");
-      StatisticsFactory statFactory = ds;
+      Assert.assertTrue(distributedSystem != null, "Need an instance of InternalDistributedSystem");
+      StatisticsFactory statFactory = distributedSystem.getStatisticsFactory();
       long statId = OSProcess.getId();
-      stats = new DLockStats(statFactory, statId);
+      stats = StatsFactory.createDLockStatsImpl(statFactory, statId);
     }
     return stats;
   }
@@ -2964,7 +2965,7 @@ public class DLockService extends DistributedLockService {
 
   static void closeStats() {
     if (stats != DUMMY_STATS) {
-      ((DLockStats) stats).close();
+      ((DistributedLockStats) stats).close();
       stats = DUMMY_STATS;
     }
     threadGroup = null;

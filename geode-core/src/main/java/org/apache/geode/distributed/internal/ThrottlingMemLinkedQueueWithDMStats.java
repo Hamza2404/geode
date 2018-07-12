@@ -103,7 +103,7 @@ public class ThrottlingMemLinkedQueueWithDMStats<E> extends OverflowQueueWithDMS
     // only block threads reading from tcp stream sockets. blocking udp
     // will cause retransmission storms
     if (!DistributionMessage.isPreciousThread()) {
-      long startTime = DistributionStats.getStatTime();
+      long startTime = System.nanoTime();
       do {
         try {
           int sleep = calculateThrottleTime();
@@ -115,8 +115,8 @@ public class ThrottlingMemLinkedQueueWithDMStats<E> extends OverflowQueueWithDMS
           // The interrupt terminates the throttling sleep and quickly
           // returns, which is probably the Right Thing.
         }
-        if (DistributionStats.enableClockStats) {
-          final long endTime = DistributionStats.getStatTime();
+        if (DistributionStatsImpl.enableClockStats) {
+          final long endTime = System.nanoTime();
           ((ThrottledMemQueueStatHelper) this.stats).throttleTime(endTime - startTime);
           startTime = endTime;
         }

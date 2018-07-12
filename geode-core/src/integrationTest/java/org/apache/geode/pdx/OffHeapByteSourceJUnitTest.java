@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import org.apache.geode.internal.offheap.MemoryAllocatorImpl;
-import org.apache.geode.internal.offheap.NullOffHeapMemoryStats;
+import org.apache.geode.internal.offheap.NullOffHeapStorageStats;
 import org.apache.geode.internal.offheap.NullOutOfOffHeapMemoryListener;
 import org.apache.geode.internal.offheap.OffHeapStoredObject;
 import org.apache.geode.internal.offheap.SlabImpl;
@@ -32,7 +32,7 @@ public class OffHeapByteSourceJUnitTest extends ByteSourceJUnitTest {
   @Before
   public final void setUp() throws Exception {
     MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-        new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+        new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
   }
 
   @After

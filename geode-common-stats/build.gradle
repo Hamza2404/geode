@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'org.apache.geode'
+version '1.8.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.reflections:reflections:0.9.11'
+}

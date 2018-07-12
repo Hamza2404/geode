@@ -43,7 +43,6 @@ import org.apache.geode.distributed.internal.ClusterDistributionManager;
 import org.apache.geode.distributed.internal.DMStats;
 import org.apache.geode.distributed.internal.DistributionConfigImpl;
 import org.apache.geode.distributed.internal.InternalLocator;
-import org.apache.geode.distributed.internal.LocatorStats;
 import org.apache.geode.distributed.internal.membership.DistributedMembershipListener;
 import org.apache.geode.distributed.internal.membership.MemberFactory;
 import org.apache.geode.distributed.internal.membership.MembershipManager;
@@ -53,6 +52,9 @@ import org.apache.geode.internal.Version;
 import org.apache.geode.internal.admin.remote.RemoteTransportConfig;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.security.SecurityServiceFactory;
+import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.MembershipTest;
 
 @Category({MembershipTest.class})
@@ -67,7 +69,8 @@ public class GMSLocatorRecoveryJUnitTest {
     if (this.tempStateFile.exists()) {
       this.tempStateFile.delete();
     }
-    this.locator = new GMSLocator(null, null, false, false, new LocatorStats(), "");
+    this.locator = new GMSLocator(null, null, false, false, StatsFactory.createLocatorStatsImpl(
+        (StatisticsFactory) new StatisticsTypeFactoryImpl(),"testLocator"), "");
     locator.setViewFile(tempStateFile);
     // System.out.println("temp state file: " + tempStateFile);
   }
@@ -177,7 +180,8 @@ public class GMSLocatorRecoveryJUnitTest {
       ((InternalLocator) l).getLocatorHandler().setMembershipManager(m1);
 
       GMSLocator l2 = new GMSLocator(SocketCreator.getLocalHost(),
-          m1.getLocalMember().getHost() + "[" + port + "]", true, true, new LocatorStats(), "");
+          m1.getLocalMember().getHost() + "[" + port + "]", true, true, StatsFactory.createLocatorStatsImpl(
+          (StatisticsFactory) new StatisticsTypeFactoryImpl(),"testLocator"), "");
       l2.setViewFile(new File("l2.dat"));
       l2.init(null);
 

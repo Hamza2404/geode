@@ -41,7 +41,7 @@ public class CancelStatListenerResponse extends AdminResponse {
     CancelStatListenerResponse m = new CancelStatListenerResponse();
     m.setRecipient(recipient);
     GemFireStatSampler sampler = null;
-    sampler = dm.getSystem().getStatSampler();
+    sampler = dm.getSystem().getInternalDistributedSystemStats().getStatSampler();
     if (sampler != null) {
       sampler.removeListener(listenerId);
     }

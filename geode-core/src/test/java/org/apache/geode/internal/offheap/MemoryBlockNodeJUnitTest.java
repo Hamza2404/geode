@@ -44,7 +44,7 @@ public class MemoryBlockNodeJUnitTest {
 
   private MemoryAllocatorImpl ma;
   private OutOfOffHeapMemoryListener ooohml;
-  private OffHeapMemoryStats stats;
+  private OffHeapStorageStats stats;
   private Slab[] slabs = {new SlabImpl((int) OffHeapStorage.MIN_SLAB_SIZE),
       new SlabImpl((int) OffHeapStorage.MIN_SLAB_SIZE * 2)};
   private StoredObject storedObject = null;
@@ -65,7 +65,7 @@ public class MemoryBlockNodeJUnitTest {
   @Before
   public void setUp() {
     ooohml = mock(OutOfOffHeapMemoryListener.class);
-    stats = mock(OffHeapMemoryStats.class);
+    stats = mock(OffHeapStorageStats.class);
     ma = (MemoryAllocatorImpl) MemoryAllocatorImpl.createForUnitTest(ooohml, stats, slabs);
   }
 

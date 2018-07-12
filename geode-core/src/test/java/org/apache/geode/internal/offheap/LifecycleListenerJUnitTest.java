@@ -58,7 +58,7 @@ public class LifecycleListenerJUnitTest {
 
     SlabImpl slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma = MemoryAllocatorImpl.createForUnitTest(
-        new NullOutOfOffHeapMemoryListener(), new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOutOfOffHeapMemoryListener(), new NullOffHeapStorageStats(), new SlabImpl[] {slab});
 
     assertEquals(0, this.afterCreateCallbacks.size());
     assertEquals(0, this.afterReuseCallbacks.size());
@@ -78,7 +78,7 @@ public class LifecycleListenerJUnitTest {
     LifecycleListener.addLifecycleListener(this.listener);
     SlabImpl slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma = MemoryAllocatorImpl.createForUnitTest(
-        new NullOutOfOffHeapMemoryListener(), new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOutOfOffHeapMemoryListener(), new NullOffHeapStorageStats(), new SlabImpl[] {slab});
 
     assertEquals(1, this.afterCreateCallbacks.size());
     assertEquals(0, this.afterReuseCallbacks.size());
@@ -101,7 +101,7 @@ public class LifecycleListenerJUnitTest {
 
     SlabImpl slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma = createAllocator(new NullOutOfOffHeapMemoryListener(),
-        new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOffHeapStorageStats(), new SlabImpl[] {slab});
 
     assertEquals(1, this.afterCreateCallbacks.size());
     assertEquals(0, this.afterReuseCallbacks.size());
@@ -113,14 +113,14 @@ public class LifecycleListenerJUnitTest {
     assertEquals(0, this.afterReuseCallbacks.size());
     assertEquals(1, this.beforeCloseCallbacks.size());
 
-    ma = createAllocator(new NullOutOfOffHeapMemoryListener(), new NullOffHeapMemoryStats(), null);
+    ma = createAllocator(new NullOutOfOffHeapMemoryListener(), new NullOffHeapStorageStats(), null);
 
     assertEquals(1, this.afterCreateCallbacks.size());
     assertEquals(1, this.afterReuseCallbacks.size());
     assertEquals(1, this.beforeCloseCallbacks.size());
 
     MemoryAllocatorImpl ma2 = createAllocator(new NullOutOfOffHeapMemoryListener(),
-        new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOffHeapStorageStats(), new SlabImpl[] {slab});
     assertEquals(null, ma2);
 
     assertEquals(1, this.afterCreateCallbacks.size());
@@ -135,7 +135,7 @@ public class LifecycleListenerJUnitTest {
   }
 
   private MemoryAllocatorImpl createAllocator(OutOfOffHeapMemoryListener ooohml,
-      OffHeapMemoryStats ohms, SlabImpl[] slab) {
+      OffHeapStorageStats ohms, SlabImpl[] slab) {
     try {
       return MemoryAllocatorImpl.createForUnitTest(ooohml, ohms, slab);
     } catch (IllegalStateException e) {
@@ -158,7 +158,7 @@ public class LifecycleListenerJUnitTest {
 
     SlabImpl slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma = MemoryAllocatorImpl.createForUnitTest(
-        new NullOutOfOffHeapMemoryListener(), new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOutOfOffHeapMemoryListener(), new NullOffHeapStorageStats(), new SlabImpl[] {slab});
 
     assertEquals(1, this.afterCreateCallbacks.size());
     assertEquals(0, this.afterReuseCallbacks.size());
@@ -172,7 +172,7 @@ public class LifecycleListenerJUnitTest {
 
     slab = new SlabImpl(1024); // 1k
     MemoryAllocatorImpl ma2 = MemoryAllocatorImpl.createForUnitTest(
-        new NullOutOfOffHeapMemoryListener(), new NullOffHeapMemoryStats(), new SlabImpl[] {slab});
+        new NullOutOfOffHeapMemoryListener(), new NullOffHeapStorageStats(), new SlabImpl[] {slab});
 
     assertEquals(2, this.afterCreateCallbacks.size());
     assertEquals(0, this.afterReuseCallbacks.size());

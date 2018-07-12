@@ -199,7 +199,7 @@ public class RemoteContainsKeyValueMessage extends RemoteOperationMessageWithDir
       }
       processor.process(this);
 
-      dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+      dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
     }
 
     @Override

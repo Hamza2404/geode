@@ -20,13 +20,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.internal.OSProcess;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.statistics.StatisticsImpl;
 import org.apache.geode.internal.statistics.StatisticsManager;
-import org.apache.geode.internal.statistics.StatisticsTypeImpl;
 
 /**
  * An implementation of {@link Statistics} that stores its statistics in local java memory.
@@ -69,7 +68,7 @@ public class Atomic50StatisticsImpl extends StatisticsImpl {
     super(type, calcTextId(system, textId), calcNumericId(system, numericId), uniqueId, 0);
     this.dSystem = system;
 
-    StatisticsTypeImpl realType = (StatisticsTypeImpl) type;
+    StatisticsType realType = type;
     if (realType.getDoubleStatCount() > 0) {
       throw new IllegalArgumentException(
           LocalizedStrings.Atomic50StatisticsImpl_ATOMICS_DO_NOT_SUPPORT_DOUBLE_STATS

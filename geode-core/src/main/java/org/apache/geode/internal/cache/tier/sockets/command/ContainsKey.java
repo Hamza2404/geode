@@ -22,6 +22,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -64,7 +65,7 @@ public class ContainsKey extends BaseCommand {
     serverConnection.setAsTrue(REQUIRES_RESPONSE);
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadContainsKeyRequestTime(start - oldStart);
     }
     // Retrieve the data from the message parts
@@ -141,7 +142,7 @@ public class ContainsKey extends BaseCommand {
     // Update the statistics and write the reply
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessContainsKeyTime(start - oldStart);
     }
     writeContainsKeyResponse(containsKey, clientMessage, serverConnection);
@@ -150,7 +151,7 @@ public class ContainsKey extends BaseCommand {
       logger.debug("{}: Sent containsKey response for region {} key {}", serverConnection.getName(),
           regionName, key);
     }
-    stats.incWriteContainsKeyResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWriteContainsKeyResponseTime(System.nanoTime() - start);
   }
 
 }

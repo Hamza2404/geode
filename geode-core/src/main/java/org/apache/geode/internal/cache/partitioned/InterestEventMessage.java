@@ -27,7 +27,6 @@ import org.apache.geode.cache.CacheException;
 import org.apache.geode.cache.InterestRegistrationEvent;
 import org.apache.geode.distributed.internal.ClusterDistributionManager;
 import org.apache.geode.distributed.internal.DistributionManager;
-import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.HighPriorityDistributionMessage;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.ReplyException;
@@ -192,7 +191,7 @@ public class InterestEventMessage extends PartitionMessage {
           logger.trace("{} processed {}", processor, this);
         }
       } finally {
-        dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+        dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
       }
     }
 

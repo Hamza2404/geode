@@ -23,9 +23,9 @@ import java.util.function.LongSupplier;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.internal.concurrent.Atomics;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
@@ -53,7 +53,7 @@ public abstract class StatisticsImpl implements Statistics {
   static Logger logger = LogService.getLogger();
 
   /** The type of this statistics instance */
-  private final StatisticsTypeImpl type;
+  private final StatisticsType type;
 
   /** The display name of this statistics instance */
   private final String textId;
@@ -113,7 +113,7 @@ public abstract class StatisticsImpl implements Statistics {
    */
   public StatisticsImpl(StatisticsType type, String textId, long numericId, long uniqueId,
       int osStatFlags) {
-    this.type = (StatisticsTypeImpl) type;
+    this.type = type;
     this.textId = textId;
     this.numericId = numericId;
     this.uniqueId = uniqueId;

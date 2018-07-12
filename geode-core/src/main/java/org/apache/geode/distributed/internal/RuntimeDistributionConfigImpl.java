@@ -99,7 +99,7 @@ public class RuntimeDistributionConfigImpl extends DistributionConfigImpl {
       value = new File("");
     }
     try {
-      this.ds.getStatSampler().changeArchive(value);
+      this.ds.getInternalDistributedSystemStats().getStatSampler().changeArchive(value);
     } catch (GemFireIOException ex) {
       throw new IllegalArgumentException(ex.getMessage());
     }

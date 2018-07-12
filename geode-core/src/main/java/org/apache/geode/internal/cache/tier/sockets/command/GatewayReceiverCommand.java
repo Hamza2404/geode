@@ -93,7 +93,7 @@ public class GatewayReceiverCommand extends BaseCommand {
     // requiresResponse = true;// let PROCESS_BATCH deal with this itself
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadProcessBatchRequestTime(start - oldStart);
     }
     Part callbackArgExistsPart;
@@ -740,7 +740,7 @@ public class GatewayReceiverCommand extends BaseCommand {
 
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessBatchTime(start - oldStart);
     }
     if (fatalException != null) {
@@ -758,7 +758,7 @@ public class GatewayReceiverCommand extends BaseCommand {
 
       writeReply(clientMessage, serverConnection, batchId, numberOfEvents);
       serverConnection.setAsTrue(RESPONDED);
-      stats.incWriteProcessBatchResponseTime(DistributionStats.getStatTime() - start);
+      stats.incWriteProcessBatchResponseTime(System.nanoTime() - start);
       if (logger.isDebugEnabled()) {
         logger.debug(
             "{}: Sent process batch normal response for batch {} containing {} events ({} bytes) with {} acknowledgement on {}",

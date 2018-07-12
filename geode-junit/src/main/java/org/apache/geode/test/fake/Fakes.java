@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.LogWriter;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.DataPolicy;
 import org.apache.geode.cache.Region;
@@ -101,8 +101,8 @@ public class Fakes {
     when(system.getClock()).thenReturn(clock);
     when(system.getLogWriter()).thenReturn(logger);
     when(system.getSecurityService()).thenReturn(mock(SecurityService.class));
-    when(system.createAtomicStatistics(any(), any(), anyLong())).thenReturn(stats);
-    when(system.createAtomicStatistics(any(), any())).thenReturn(stats);
+    when(system.getInternalDistributedSystemStats().createAtomicStatistics(any(), any(), anyLong())).thenReturn(stats);
+    when(system.getInternalDistributedSystemStats().createAtomicStatistics(any(), any())).thenReturn(stats);
     when(system.getCache()).thenReturn(cache);
 
     when(distributionManager.getId()).thenReturn(member);

@@ -37,10 +37,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.geode.CancelException;
 import org.apache.geode.DataSerializer;
 import org.apache.geode.InvalidDeltaException;
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.EntryNotFoundException;
 import org.apache.geode.cache.InterestResultPolicy;
 import org.apache.geode.cache.Operation;
@@ -88,7 +88,6 @@ import org.apache.geode.internal.logging.log4j.LogMarker;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.offheap.annotations.Released;
 import org.apache.geode.internal.sequencelog.EntryLogger;
-import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.AuthenticationRequiredException;
 import org.apache.geode.security.GemFireSecurityException;
@@ -104,7 +103,7 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
 
   private static final Logger logger = LogService.getLogger();
 
-  private static final int DEFAULT_SOCKET_BUFFER_SIZE = 32768;
+  private int DEFAULT_SOCKET_BUFFER_SIZE = 32768;
 
   /**
    * true if the constructor successfully created a connection. If false, the run method for this
@@ -288,7 +287,7 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
     // this holds the connection which this threads reads
     this.eManager = eManager;
     this.endpoint = endpoint;
-    this.stats = new CCUStats(this.system, this.location);
+    this.stats = new CCUStatsImpl(this.system.getStatisticsFactory(), this.location);
 
     // Create the connection...
     final boolean isDebugEnabled = logger.isDebugEnabled();
@@ -1842,23 +1841,22 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
    *
    * @since GemFire 5.7
    */
-  public static class CCUStats implements MessageStats {
+  public static class CCUStatsImpl implements CCUStats {
 
-    private static final StatisticsType type;
-    private static final int messagesBeingReceivedId;
-    private static final int messageBytesBeingReceivedId;
-    private static final int receivedBytesId;
+    private StatisticsType type;
+    private int messagesBeingReceivedId;
+    private int messageBytesBeingReceivedId;
+    private int receivedBytesId;
 
-    static {
-      StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-      type = f.createType("CacheClientUpdaterStats", "Statistics about incoming subscription data",
+    private void initializeStats(StatisticsFactory factory) {
+      type = factory.createType("CacheClientUpdaterStats", "Statistics about incoming subscription data",
           new StatisticDescriptor[] {
-              f.createLongCounter("receivedBytes",
+              factory.createLongCounter("receivedBytes",
                   "Total number of bytes received from the server.", "bytes"),
-              f.createIntGauge("messagesBeingReceived",
+              factory.createIntGauge("messagesBeingReceived",
                   "Current number of message being received off the network or being processed after reception.",
                   "messages"),
-              f.createLongGauge("messageBytesBeingReceived",
+              factory.createLongGauge("messageBytesBeingReceived",
                   "Current number of bytes consumed by messages being received or processed.",
                   "bytes"),});
       receivedBytesId = type.nameToId("receivedBytes");
@@ -1869,11 +1867,13 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
     // instance fields
     private final Statistics stats;
 
-    CCUStats(DistributedSystem ids, ServerLocation location) {
+    CCUStatsImpl(StatisticsFactory factory, ServerLocation location) {
+      initializeStats(factory);
       // no need for atomic since only a single thread will be writing these
-      this.stats = ids.createStatistics(type, "CacheClientUpdater-" + location);
+      this.stats = factory.createStatistics(type, "CacheClientUpdater-" + location);
     }
 
+    @Override
     public void close() {
       this.stats.close();
     }
@@ -1910,7 +1910,7 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
      * @return the current time (ns)
      */
     public long startTime() {
-      return DistributionStats.getStatTime();
+      return System.nanoTime();
     }
   }
 

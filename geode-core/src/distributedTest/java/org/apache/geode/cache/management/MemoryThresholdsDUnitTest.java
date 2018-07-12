@@ -1745,7 +1745,7 @@ public class MemoryThresholdsDUnitTest extends ClientServerTestCase {
     Cache cache = getCache();
     InternalDistributedSystem internalSystem =
         (InternalDistributedSystem) cache.getDistributedSystem();
-    final GemFireStatSampler sampler = internalSystem.getStatSampler();
+    final GemFireStatSampler sampler = internalSystem.getInternalDistributedSystemStats().getStatSampler();
     sampler.waitForInitialization(10000); // fix: remove infinite wait
     final LocalStatListener l = new LocalStatListener() {
       public void statValueChanged(double value) {
@@ -1754,7 +1754,7 @@ public class MemoryThresholdsDUnitTest extends ClientServerTestCase {
     };
     final String tenuredPoolName = HeapMemoryMonitor.getTenuredMemoryPoolMXBean().getName();
     LogWriterUtils.getLogWriter().info("TenuredPoolName:" + tenuredPoolName);
-    final List list = internalSystem.getStatsList();
+    final List list = internalSystem.getInternalDistributedSystemStats().getStatsList();
     assertFalse(list.isEmpty());
 
     // fix: found race condition here...

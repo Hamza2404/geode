@@ -356,7 +356,7 @@ public class TcpServer {
    */
   private void processRequest(final Socket socket) {
     executor.execute(() -> {
-      long startTime = DistributionStats.getStatTime();
+      long startTime = System.nanoTime();
       DataInputStream input = null;
       try {
         socket.setSoTimeout(READ_TIMEOUT);
@@ -486,7 +486,7 @@ public class TcpServer {
 
       handler.endRequest(request, startTime);
 
-      startTime = DistributionStats.getStatTime();
+      startTime = System.nanoTime();
       if (response != null) {
         DataOutputStream output = new DataOutputStream(socket.getOutputStream());
         if (versionOrdinal != Version.CURRENT_ORDINAL) {
@@ -524,7 +524,7 @@ public class TcpServer {
     try {
       ClientProtocolService clientProtocolService = clientProtocolServiceLoader.lookupService();
       clientProtocolService.initializeStatistics("LocatorStats",
-          internalLocator.getDistributedSystem());
+          internalLocator.getDistributedSystem().getStatisticsFactory());
       try (ClientProtocolProcessor pipeline = clientProtocolService.createProcessorForLocator(
           internalLocator, internalLocator.getCache().getSecurityService())) {
         while (!pipeline.socketProcessingIsFinished()) {

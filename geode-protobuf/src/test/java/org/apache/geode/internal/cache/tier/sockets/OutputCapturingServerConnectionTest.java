@@ -91,7 +91,7 @@ public class OutputCapturingServerConnectionTest {
     CachedRegionHelper cachedRegionHelper = mock(CachedRegionHelper.class);
     when(cachedRegionHelper.getCache()).thenReturn(cache);
     return new ProtobufServerConnection(socketMock, cache, cachedRegionHelper,
-        mock(CacheServerStats.class), 0, 1024, "",
+        mock(CacheServerStatsImpl.class), 0, 1024, "",
         CommunicationMode.ProtobufClientServerProtocol.getModeNumber(), acceptorStub,
         clientProtocolProcessorMock, mock(SecurityService.class));
   }

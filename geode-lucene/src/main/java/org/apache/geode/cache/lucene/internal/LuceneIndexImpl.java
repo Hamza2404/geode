@@ -61,7 +61,7 @@ public abstract class LuceneIndexImpl implements InternalLuceneIndex {
     this.cache = cache;
 
     final String statsName = indexName + "-" + regionPath;
-    this.indexStats = new LuceneIndexStats(cache.getDistributedSystem(), statsName);
+    this.indexStats = new LuceneIndexStats(cache.getDistributedSystem().getStatisticsFactory(), statsName);
   }
 
   @Override

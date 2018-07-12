@@ -1227,7 +1227,7 @@ public class JGroupsMessenger implements Messenger {
 
     @Override
     public void receive(Message jgmsg) {
-      long startTime = DistributionStats.getStatTime();
+      long startTime = System.nanoTime();
       try {
         if (services.getManager().shutdownInProgress()) {
           return;
@@ -1293,7 +1293,7 @@ public class JGroupsMessenger implements Messenger {
         }
 
       } finally {
-        long delta = DistributionStats.getStatTime() - startTime;
+        long delta = System.nanoTime() - startTime;
         JGroupsMessenger.this.services.getStatistics().incUDPDispatchRequestTime(delta);
       }
     }

@@ -15,7 +15,7 @@
 package org.apache.geode.internal.admin;
 
 import org.apache.geode.DataSerializable;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.internal.admin.statalerts.StatisticInfo;
 
 /**

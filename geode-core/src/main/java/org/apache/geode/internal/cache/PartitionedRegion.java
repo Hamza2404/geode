@@ -53,7 +53,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelException;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.AttributesMutator;
@@ -251,6 +251,7 @@ import org.apache.geode.internal.sequencelog.RegionLogger;
 import org.apache.geode.internal.size.Sizeable;
 import org.apache.geode.internal.util.TransformUtils;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * A Region whose total storage is split into chunks of data (partitions) which are copied up to a
@@ -540,7 +541,7 @@ public class PartitionedRegion extends LocalRegion
 
   @Override
   public boolean remove(Object key, Object value, Object callbackArg) {
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     try {
       return super.remove(key, value, callbackArg);
     } finally {
@@ -740,7 +741,7 @@ public class PartitionedRegion extends LocalRegion
     super(regionName, regionAttributes, parentRegion, cache, internalRegionArgs);
 
     this.node = initializeNode();
-    this.prStats = new PartitionedRegionStats(cache.getDistributedSystem(), getFullPath());
+    this.prStats = StatsFactory.createPartitionedRegionStatsImpl(cache.getDistributedSystem().getStatisticsFactory(), getFullPath());
     this.regionIdentifier = getFullPath().replace('/', '#');
 
     if (logger.isDebugEnabled()) {
@@ -831,8 +832,8 @@ public class PartitionedRegion extends LocalRegion
         && !this.getEvictionAttributes().getAlgorithm().isNone()
         && this.getEvictionAttributes().getAction().isOverflowToDisk())
         || this.getDataPolicy().withPersistence()) {
-      StatisticsFactory sf = this.getCache().getDistributedSystem();
-      this.diskRegionStats = new DiskRegionStats(sf, getFullPath());
+      StatisticsFactory sf = this.getCache().getDistributedSystem().getStatisticsFactory();
+      this.diskRegionStats = StatsFactory.createDiskRegionStatsImpl(sf, getFullPath());
     } else {
       this.diskRegionStats = null;
     }
@@ -1617,7 +1618,7 @@ public class PartitionedRegion extends LocalRegion
   @Override
   protected Region.Entry<?, ?> nonTXGetEntry(KeyInfo keyInfo, boolean access,
       boolean allowTombstones) {
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     final Object key = keyInfo.getKey();
     try {
       int bucketId = keyInfo.getBucketId();
@@ -2050,7 +2051,7 @@ public class PartitionedRegion extends LocalRegion
   public boolean virtualPut(EntryEventImpl event, boolean ifNew, boolean ifOld,
       Object expectedOldValue, boolean requireOldValue, long lastModified,
       boolean overwriteDestroyed) throws TimeoutException, CacheWriterException {
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     boolean result = false;
     final DistributedPutAllOperation putAllOp_save = event.setPutAllOperation(null);
 
@@ -2223,7 +2224,7 @@ public class PartitionedRegion extends LocalRegion
       throw cache.getCacheClosedException("Cache is shutting down");
     }
 
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     // build all the msgs by bucketid
     HashMap prMsgMap = putAllOp.createPRMessages();
     PutAllPartialResult partialKeys = new PutAllPartialResult(putAllOp.putAllDataSize);
@@ -2315,7 +2316,7 @@ public class PartitionedRegion extends LocalRegion
       throw cache.getCacheClosedException("Cache is shutting down");
     }
 
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     // build all the msgs by bucketid
     HashMap<Integer, RemoveAllPRMessage> prMsgMap = op.createPRMessages();
     PutAllPartialResult partialKeys = new PutAllPartialResult(op.removeAllDataSize);
@@ -3326,7 +3327,7 @@ public class PartitionedRegion extends LocalRegion
     }
     // Potentially no storage assigned, start bucket creation, be careful of race
     // conditions
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     if (isDataStore()) {
       ret = this.redundancyProvider.createBucketAtomically(bucketId, size, startTime, false,
           partitionName);
@@ -3344,7 +3345,7 @@ public class PartitionedRegion extends LocalRegion
     Object obj = null;
     final Object key = keyInfo.getKey();
     final Object aCallbackArgument = keyInfo.getCallbackArg();
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     try {
       int bucketId = keyInfo.getBucketId();
       if (bucketId == KeyInfo.UNKNOWN_BUCKET) {
@@ -5152,7 +5153,7 @@ public class PartitionedRegion extends LocalRegion
       final Object expectedOldValue)
       throws TimeoutException, EntryNotFoundException, CacheWriterException {
 
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     try {
       if (event.getEventId() == null) {
         event.setNewEventId(this.cache.getDistributedSystem());
@@ -5642,7 +5643,7 @@ public class PartitionedRegion extends LocalRegion
 
   @Override
   public void basicInvalidate(EntryEventImpl event) throws EntryNotFoundException {
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     try {
       if (event.getEventId() == null) {
         event.setNewEventId(this.cache.getDistributedSystem());
@@ -6288,7 +6289,7 @@ public class PartitionedRegion extends LocalRegion
 
   @Override
   protected boolean nonTXContainsKey(KeyInfo keyInfo) {
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     boolean contains = false;
     try {
       int bucketId = keyInfo.getBucketId();
@@ -6462,7 +6463,7 @@ public class PartitionedRegion extends LocalRegion
     // checkClosed();
     checkReadiness();
     validateKey(key);
-    final long startTime = PartitionedRegionStats.startTime();
+    final long startTime = System.nanoTime();
     boolean containsValueForKey = false;
     try {
       containsValueForKey = getDataView().containsValueForKey(getKeyInfo(key), this);

@@ -26,6 +26,7 @@ import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -58,7 +59,7 @@ public class StopCQ extends BaseCQCommand {
     serverConnection.setAsTrue(REQUIRES_RESPONSE);
     serverConnection.setAsTrue(REQUIRES_CHUNKED_RESPONSE);
 
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     // Retrieve the data from the message parts
     String cqName = clientMessage.getPart(0).getString();
 
@@ -126,7 +127,7 @@ public class StopCQ extends BaseCQCommand {
     serverConnection.setAsTrue(RESPONDED);
 
     long oldStart = start;
-    start = DistributionStats.getStatTime();
+    start = System.nanoTime();
     stats.incProcessStopCqTime(start - oldStart);
   }
 

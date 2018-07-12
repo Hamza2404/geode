@@ -29,6 +29,7 @@ import org.apache.geode.distributed.internal.membership.MembershipManager;
 import org.apache.geode.internal.cache.CacheServerAdvisor;
 import org.apache.geode.internal.cache.tier.CommunicationMode;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.cache.tier.sockets.ConnectionListener;
 import org.apache.geode.internal.i18n.LocalizedStrings;
@@ -70,7 +71,7 @@ public class LoadMonitor implements ConnectionListener {
     this.location = location;
     this.pollingThread.start();
     this.stats = cacheServerStats;
-    this.stats.setLoad(lastLoad);
+    this.stats.setLoad(lastLoad.getConnectionLoad(),lastLoad.getLoadPerConnection(),lastLoad.getSubscriptionConnectionLoad(),lastLoad.getLoadPerSubscriptionConnection());
   }
 
   /**
@@ -199,7 +200,7 @@ public class LoadMonitor implements ConnectionListener {
                   locators);
             }
 
-            stats.setLoad(load);
+            stats.setLoad(load.getConnectionLoad(),load.getLoadPerConnection(),load.getSubscriptionConnectionLoad(),load.getLoadPerSubscriptionConnection());
             if (locators != null) {
               CacheServerLoadMessage message =
                   new CacheServerLoadMessage(load, location, myClientIds);

@@ -42,9 +42,9 @@ public class OriginalServerConnection extends ServerConnection {
    *
    */
   public OriginalServerConnection(Socket socket, InternalCache internalCache,
-      CachedRegionHelper helper, CacheServerStats stats, int hsTimeout, int socketBufferSize,
-      String communicationModeStr, byte communicationMode, Acceptor acceptor,
-      SecurityService securityService) {
+                                  CachedRegionHelper helper, CacheServerStats stats, int hsTimeout, int socketBufferSize,
+                                  String communicationModeStr, byte communicationMode, Acceptor acceptor,
+                                  SecurityService securityService) {
     super(socket, internalCache, helper, stats, hsTimeout, socketBufferSize, communicationModeStr,
         communicationMode, acceptor, securityService);
 

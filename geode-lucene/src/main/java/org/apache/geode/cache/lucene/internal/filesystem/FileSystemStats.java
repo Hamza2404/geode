@@ -16,43 +16,42 @@ package org.apache.geode.cache.lucene.internal.filesystem;
 
 import java.util.function.LongSupplier;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
 public class FileSystemStats {
-  private static final StatisticsType statsType;
+  private StatisticsType statsType;
   private static final String statsTypeName = "FileSystemStats";
   private static final String statsTypeDescription =
       "Statistics about in memory file system implementation";
 
   private final Statistics stats;
 
-  private static final int readBytesId;
-  private static final int writtenBytesId;
-  private static final int fileCreatesId;
-  private static final int temporaryFileCreatesId;
-  private static final int fileDeletesId;
-  private static final int fileRenamesId;
-  private static final int bytesId;
+  private int readBytesId;
+  private int writtenBytesId;
+  private int fileCreatesId;
+  private int temporaryFileCreatesId;
+  private int fileDeletesId;
+  private int fileRenamesId;
+  private int bytesId;
 
-  static {
-    final StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    statsType = f.createType(statsTypeName, statsTypeDescription,
+  private void initializeStats(StatisticsFactory factory) {
+    statsType = factory.createType(statsTypeName, statsTypeDescription,
         new StatisticDescriptor[] {
-            f.createLongCounter("readBytes", "Number of bytes written", "bytes"),
-            f.createLongCounter("writtenBytes", "Number of bytes read", "bytes"),
-            f.createIntCounter("fileCreates", "Number of files created", "files"),
-            f.createIntCounter("temporaryFileCreates", "Number of temporary files created",
+            factory.createLongCounter("readBytes", "Number of bytes written", "bytes"),
+            factory.createLongCounter("writtenBytes", "Number of bytes read", "bytes"),
+            factory.createIntCounter("fileCreates", "Number of files created", "files"),
+            factory.createIntCounter("temporaryFileCreates", "Number of temporary files created",
                 "files"),
-            f.createIntCounter("fileDeletes", "Number of files deleted", "files"),
-            f.createIntCounter("fileRenames", "Number of files renamed", "files"),
-            f.createIntGauge("files", "Number of files on this member", "files"),
-            f.createIntGauge("chunks", "Number of file chunks on this member", "chunks"),
-            f.createLongGauge("bytes", "Number of bytes on this member", "bytes"),});
+            factory.createIntCounter("fileDeletes", "Number of files deleted", "files"),
+            factory.createIntCounter("fileRenames", "Number of files renamed", "files"),
+            factory.createIntGauge("files", "Number of files on this member", "files"),
+            factory.createIntGauge("chunks", "Number of file chunks on this member", "chunks"),
+            factory.createLongGauge("bytes", "Number of bytes on this member", "bytes"),});
 
     readBytesId = statsType.nameToId("readBytes");
     writtenBytesId = statsType.nameToId("writtenBytes");
@@ -63,8 +62,9 @@ public class FileSystemStats {
     bytesId = statsType.nameToId("bytes");
   }
 
-  public FileSystemStats(StatisticsFactory f, String name) {
-    this.stats = f.createAtomicStatistics(statsType, name);
+  public FileSystemStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
+    this.stats = factory.createAtomicStatistics(statsType, name);
   }
 
   public void incReadBytes(int delta) {

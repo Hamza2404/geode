@@ -14,34 +14,34 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 
 /**
  * Statistics related to a Java VM. Currently they all come from {@link java.lang.Runtime}.
  */
 public class VMStats implements VMStatsContract {
-  private static final StatisticsType vmType;
-  private static final int cpusId;
-  private static final int freeMemoryId;
-  private static final int totalMemoryId;
-  private static final int maxMemoryId;
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    vmType = f.createType("VMStats", "Stats available on any java virtual machine.",
+  private StatisticsType vmType;
+  private int cpusId;
+  private int freeMemoryId;
+  private int totalMemoryId;
+  private int maxMemoryId;
+  
+  private void initializeStats(StatisticsFactory factory) {
+    vmType = factory.createType("VMStats", "Stats available on any java virtual machine.",
         new StatisticDescriptor[] {
-            f.createIntGauge("cpus", "Number of cpus available to the java VM on its machine.",
+            factory.createIntGauge("cpus", "Number of cpus available to the java VM on its machine.",
                 "cpus", true),
-            f.createLongGauge("freeMemory",
+            factory.createLongGauge("freeMemory",
                 "An approximation fo the total amount of memory currently available for future allocated objects, measured in bytes.",
                 "bytes", true),
-            f.createLongGauge("totalMemory",
+            factory.createLongGauge("totalMemory",
                 "The total amount of memory currently available for current and future objects, measured in bytes.",
                 "bytes"),
-            f.createLongGauge("maxMemory",
+            factory.createLongGauge("maxMemory",
                 "The maximum amount of memory that the VM will attempt to use, measured in bytes.",
                 "bytes", true)});
     cpusId = vmType.nameToId("cpus");
@@ -53,8 +53,9 @@ public class VMStats implements VMStatsContract {
   private final Statistics vmStats;
 
 
-  public VMStats(StatisticsFactory f, long id) {
-    this.vmStats = f.createStatistics(vmType, "vmStats", id);
+  public VMStats(StatisticsFactory factory, long id) {
+    initializeStats(factory);
+    this.vmStats = factory.createStatistics(vmType, "vmStats", id);
   }
 
   public void refresh() {

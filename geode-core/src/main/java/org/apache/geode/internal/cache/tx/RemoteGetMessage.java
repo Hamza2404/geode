@@ -29,6 +29,7 @@ import org.apache.geode.distributed.internal.DirectReplyProcessor;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.DistributionMessage;
 import org.apache.geode.distributed.internal.DistributionStats;
+import org.apache.geode.distributed.internal.DistributionStatsImpl;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.ReplyException;
 import org.apache.geode.distributed.internal.ReplyMessage;
@@ -280,7 +281,7 @@ public class RemoteGetMessage extends RemoteOperationMessageWithDirectReply {
       if (isDebugEnabled) {
         logger.trace(LogMarker.DM_VERBOSE, "{} Processed {}", processor, this);
       }
-      dm.getStats().incReplyMessageTime(DistributionStats.getStatTime() - startTime);
+      dm.getStats().incReplyMessageTime(System.nanoTime() - startTime);
     }
 
     @Override
@@ -333,8 +334,8 @@ public class RemoteGetMessage extends RemoteOperationMessageWithDirectReply {
 
     @Override
     public void process(DistributionMessage msg) {
-      if (DistributionStats.enableClockStats) {
-        this.start = DistributionStats.getStatTime();
+      if (DistributionStatsImpl.enableClockStats) {
+        this.start = System.nanoTime();
       }
       if (msg instanceof GetReplyMessage) {
         GetReplyMessage reply = (GetReplyMessage) msg;
@@ -387,7 +388,7 @@ public class RemoteGetMessage extends RemoteOperationMessageWithDirectReply {
      */
     public Object waitForResponse(boolean preferCD) throws RemoteOperationException {
       waitForRemoteResponse();
-      if (DistributionStats.enableClockStats) {
+      if (DistributionStatsImpl.enableClockStats) {
         getDistributionManager().getStats().incReplyHandOffTime(this.start);
       }
       if (!this.returnValueReceived) {

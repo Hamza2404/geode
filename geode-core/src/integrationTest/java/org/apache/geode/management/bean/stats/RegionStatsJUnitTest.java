@@ -26,6 +26,7 @@ import org.apache.geode.internal.cache.PartitionedRegionStats;
 import org.apache.geode.management.internal.beans.DiskRegionBridge;
 import org.apache.geode.management.internal.beans.PartitionedRegionBridge;
 import org.apache.geode.management.internal.beans.RegionMBeanBridge;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.JMXTest;
 
 /**
@@ -48,9 +49,9 @@ public class RegionStatsJUnitTest extends MBeanStatsTestCase {
   private DiskRegionStats diskRegionStats;
 
   protected void init() {
-    cachePerfStats = new CachePerfStats(system);
-    partitionedRegionStats = new PartitionedRegionStats(system, "/tests");
-    diskRegionStats = new DiskRegionStats(system, "test-disk");
+    cachePerfStats = StatsFactory.createCachePerfStatsImpl(system.getStatisticsFactory(),null);
+    partitionedRegionStats = StatsFactory.createPartitionedRegionStatsImpl(system.getStatisticsFactory(), "/tests");
+    diskRegionStats = StatsFactory.createDiskRegionStatsImpl(system.getStatisticsFactory(), "test-disk");
 
     bridge = new RegionMBeanBridge(cachePerfStats);
     parBridge = new PartitionedRegionBridge(partitionedRegionStats);

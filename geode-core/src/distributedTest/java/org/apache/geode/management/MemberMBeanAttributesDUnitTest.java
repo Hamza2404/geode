@@ -84,7 +84,7 @@ public class MemberMBeanAttributesDUnitTest extends ManagementTestBase {
   private void sampleStatistics(final VM vm) {
     vm.invoke("sampleStatistics", () -> {
       InternalDistributedSystem system = getInternalDistributedSystem();
-      HostStatSampler sampler = system.getStatSampler();
+      HostStatSampler sampler = system.getInternalDistributedSystemStats().getStatSampler();
       SampleCollector sampleCollector = sampler.getSampleCollector();
       sampleCollector.sample(NanoTimer.getTime());
     });

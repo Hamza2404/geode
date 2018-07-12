@@ -29,9 +29,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.test.junit.categories.StatisticsTest;
 
@@ -85,7 +85,7 @@ public class DistributedSystemStatisticsTypeIntegrationTest {
   }
 
   private StatisticsFactory factory() {
-    return this.system;
+    return this.system.getStatisticsFactory();
   }
 
 }

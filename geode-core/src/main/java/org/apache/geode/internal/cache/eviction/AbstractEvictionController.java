@@ -14,12 +14,13 @@
  */
 package org.apache.geode.internal.cache.eviction;
 
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.EvictionAction;
 import org.apache.geode.cache.EvictionAlgorithm;
 import org.apache.geode.cache.EvictionAttributes;
 import org.apache.geode.cache.util.ObjectSizer;
 import org.apache.geode.internal.cache.BucketRegion;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Eviction controllers that extend this class evict the least recently used (LRU) entry in the
@@ -48,7 +49,6 @@ import org.apache.geode.internal.cache.BucketRegion;
  * result, an instance of {@code AbstractEvictionController} cannot be shared among multiple
  * regions. Attempts to create a region with a LRU-based capacity controller that has already been
  * used to create another region will result in an {@link IllegalStateException} being thrown.
- *
  * @since GemFire 3.2
  */
 public abstract class AbstractEvictionController implements EvictionController {
@@ -57,7 +57,7 @@ public abstract class AbstractEvictionController implements EvictionController {
    * Create and return the appropriate eviction controller using the attributes provided.
    */
   public static EvictionController create(EvictionAttributes evictionAttributes, boolean isOffHeap,
-      StatisticsFactory statsFactory, String statsName) {
+                                          StatisticsFactory statsFactory, String statsName) {
     EvictionAlgorithm algorithm = evictionAttributes.getAlgorithm();
     EvictionAction action = evictionAttributes.getAction();
     ObjectSizer sizer = evictionAttributes.getObjectSizer();
@@ -65,18 +65,18 @@ public abstract class AbstractEvictionController implements EvictionController {
     EvictionStats evictionStats;
     EvictionCounters evictionCounters;
     if (algorithm == EvictionAlgorithm.LRU_HEAP) {
-      evictionStats = new HeapLRUStatistics(statsFactory, statsName);
+      evictionStats = StatsFactory.createHeapLRUStatisticsImpl(statsFactory, statsName);
       evictionCounters = new EvictionCountersImpl(evictionStats);
       return new HeapLRUController(evictionCounters, action, sizer, algorithm);
     }
     if (algorithm == EvictionAlgorithm.LRU_MEMORY || algorithm == EvictionAlgorithm.LIFO_MEMORY) {
-      evictionStats = new MemoryLRUStatistics(statsFactory, statsName);
+      evictionStats = StatsFactory.createCountLRUStatisticsImpl(statsFactory, statsName);
       evictionCounters = new EvictionCountersImpl(evictionStats);
       return new MemoryLRUController(evictionCounters, maximum, sizer, action, isOffHeap,
           algorithm);
     }
     if (algorithm == EvictionAlgorithm.LRU_ENTRY || algorithm == EvictionAlgorithm.LIFO_ENTRY) {
-      evictionStats = new CountLRUStatistics(statsFactory, statsName);
+      evictionStats = StatsFactory.createMemoryLRUStatisticsImpl(statsFactory, statsName);
       evictionCounters = new EvictionCountersImpl(evictionStats);
       return new CountLRUEviction(evictionCounters, maximum, action, algorithm);
     }
@@ -99,10 +99,9 @@ public abstract class AbstractEvictionController implements EvictionController {
   /**
    * Creates a new {@code AbstractEvictionController} with the given {@linkplain EvictionAction
    * eviction action}.
-   *
    */
   protected AbstractEvictionController(EvictionCounters evictionCounters,
-      EvictionAction evictionAction, EvictionAlgorithm algorithm) {
+                                       EvictionAction evictionAction, EvictionAlgorithm algorithm) {
     this.counters = evictionCounters;
     this.evictionAction = evictionAction;
     this.algorithm = algorithm;
@@ -110,7 +109,6 @@ public abstract class AbstractEvictionController implements EvictionController {
 
   /**
    * Force subclasses to have a reasonable {@code toString}
-   *
    * @since GemFire 4.0
    */
   @Override
@@ -119,9 +117,8 @@ public abstract class AbstractEvictionController implements EvictionController {
   /**
    * Gets the action that is performed on the least recently used entry when it is evicted from the
    * VM.
-   *
-   * @return one of the following constants: {@link EvictionAction#LOCAL_DESTROY},
-   *         {@link EvictionAction#OVERFLOW_TO_DISK}
+   * @return one of the following constants: {@link EvictionAction#LOCAL_DESTROY}, {@link
+   * EvictionAction#OVERFLOW_TO_DISK}
    */
   @Override
   public EvictionAction getEvictionAction() {

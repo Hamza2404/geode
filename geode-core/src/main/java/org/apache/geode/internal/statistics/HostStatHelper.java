@@ -18,7 +18,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 import org.apache.geode.internal.PureJavaMode;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.net.SocketCreator;
@@ -33,6 +33,7 @@ import org.apache.geode.internal.statistics.platform.SolarisProcessStats;
 import org.apache.geode.internal.statistics.platform.SolarisSystemStats;
 import org.apache.geode.internal.statistics.platform.WindowsProcessStats;
 import org.apache.geode.internal.statistics.platform.WindowsSystemStats;
+import org.apache.geode.statistics.StatisticsFactory;
 
 /**
  * Provides native methods which fetch operating system statistics.
@@ -184,20 +185,20 @@ public class HostStatHelper {
    * Creates and returns a {@link Statistics} with the given pid and name. The resource's stats will
    * contain a snapshot of the current statistic values for the specified process.
    */
-  public static Statistics newProcess(OsStatisticsFactory f, long pid, String name) {
+  public static Statistics newProcess(StatisticsFactory statisticsFactory, OsStatisticsFactory factory, long pid, String name) {
     Statistics stats;
     switch (osCode) {
       case SOLARIS_CODE:
-        stats = f.createOsStatistics(SolarisProcessStats.getType(), name, pid, PROCESS_STAT_FLAG);
+        stats = factory.createOsStatistics(new SolarisProcessStats(statisticsFactory).getType(), name, pid, PROCESS_STAT_FLAG);
         break;
       case LINUX_CODE:
-        stats = f.createOsStatistics(LinuxProcessStats.getType(), name, pid, PROCESS_STAT_FLAG);
+        stats = factory.createOsStatistics(new LinuxProcessStats(statisticsFactory).getType(), name, pid, PROCESS_STAT_FLAG);
         break;
       case OSX_CODE:
-        stats = f.createOsStatistics(OSXProcessStats.getType(), name, pid, PROCESS_STAT_FLAG);
+        stats = factory.createOsStatistics(new OSXProcessStats(statisticsFactory).getType(), name, pid, PROCESS_STAT_FLAG);
         break;
       case WINDOWS_CODE:
-        stats = f.createOsStatistics(WindowsProcessStats.getType(), name, pid, PROCESS_STAT_FLAG);
+        stats = factory.createOsStatistics(new WindowsProcessStats(statisticsFactory).getType(), name, pid, PROCESS_STAT_FLAG);
         break;
       default:
         throw new InternalGemFireException(
@@ -231,7 +232,7 @@ public class HostStatHelper {
       default:
         throw new InternalGemFireException(
             LocalizedStrings.HostStatHelper_UNHANDLED_OSCODE_0_HOSTSTATHELPERNEWPROCESSSTATS
-                .toLocalizedString(Integer.valueOf(osCode)));
+                .toLocalizedString(osCode));
     }
   }
 
@@ -239,33 +240,34 @@ public class HostStatHelper {
    * Creates and returns a {@link Statistics} with the current machine's stats. The resource's stats
    * will contain a snapshot of the current statistic values for the local machine.
    */
-  static void newSystem(OsStatisticsFactory f) {
+  static Statistics newSystem(StatisticsFactory statisticsFactory, OsStatisticsFactory factory) {
     Statistics stats;
     switch (osCode) {
       case SOLARIS_CODE:
-        stats = f.createOsStatistics(SolarisSystemStats.getType(), getHostSystemName(),
+        stats = factory.createOsStatistics(new SolarisSystemStats(statisticsFactory).getType(), getHostSystemName(),
             getHostSystemId(), SYSTEM_STAT_FLAG);
         break;
       case LINUX_CODE:
-        stats = f.createOsStatistics(LinuxSystemStats.getType(), getHostSystemName(),
+        stats = factory.createOsStatistics(new LinuxSystemStats(statisticsFactory).getType(), getHostSystemName(),
             getHostSystemId(), SYSTEM_STAT_FLAG);
         break;
       case WINDOWS_CODE:
-        stats = f.createOsStatistics(WindowsSystemStats.getType(), getHostSystemName(),
+        stats = factory.createOsStatistics(new WindowsSystemStats(statisticsFactory).getType(), getHostSystemName(),
             getHostSystemId(), SYSTEM_STAT_FLAG);
         break;
       case OSX_CODE:
-        stats = f.createOsStatistics(OSXSystemStats.getType(), getHostSystemName(),
+        stats = factory.createOsStatistics(new OSXSystemStats(statisticsFactory).getType(), getHostSystemName(),
             getHostSystemId(), SYSTEM_STAT_FLAG);
         break;
       default:
         throw new InternalGemFireException(
             LocalizedStrings.HostStatHelper_UNHANDLED_OSCODE_0_HOSTSTATHELPERNEWSYSTEM
-                .toLocalizedString(Integer.valueOf(osCode)));
+                .toLocalizedString(osCode));
     }
     if (stats instanceof LocalStatisticsImpl) {
       refreshSystem((LocalStatisticsImpl) stats);
     } // otherwise its a Dummy implementation so do nothing
+    return stats;
   }
 
   /**

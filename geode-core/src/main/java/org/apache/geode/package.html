@@ -47,22 +47,22 @@ The statistics may be
 monitored at runtime using the Admin API or GemFire JMX Agent.</P>
 
 <P>Each application statistic is described by a
-{@link org.apache.geode.StatisticDescriptor} instance.
-Logical groupings of application statistics are described by a
-{@link org.apache.geode.StatisticsType} instance that contains the name
-and description of each statistic.  Each instance of an type
-is represented by an instance of
-{@link org.apache.geode.Statistics}.
-The {@link org.apache.geode.StatisticDescriptor descriptors},
-{@link org.apache.geode.StatisticsType types}, and
-{@link org.apache.geode.Statistics instances} are created using an
-instance of the {@link org.apache.geode.StatisticsFactory} interface.
-Each statistics instance
-(there may be multiple instances of a statistics type) can be identified
-by a {@link org.apache.geode.Statistics#getTextId text id}
-and/or a {@link org.apache.geode.Statistics#getNumericId numeric id}.
-The name, description, etc. of the statistic and its type
-are available in the Admin API or GemFire JMX Agent.</P>
+   {@link org.apache.geode.StatisticDescriptor} instance.
+   Logical groupings of application statistics are described by a
+   {@link org.apache.geode.StatisticsType} instance that contains the name
+   and description of each statistic. Each instance of an type
+   is represented by an instance of
+   {@link org.apache.geode.Statistics}.
+   The {@link org.apache.geode.statistics.StatisticDescriptor descriptors},
+   {@link org.apache.geode.statistics.StatisticsType types}, and
+   {@link org.apache.geode.statistics.Statistics instances} are created using an
+   instance of the {@link org.apache.geode.StatisticsFactory} interface.
+   Each statistics instance
+   (there may be multiple instances of a statistics type) can be identified
+   by a {@link org.apache.geode.Statistics#getTextId text id}
+   and/or a {@link org.apache.geode.Statistics#getNumericId numeric id}.
+   The name, description, etc. of the statistic and its type
+   are available in the Admin API or GemFire JMX Agent.</P>
 
 <P>An application can get, set, and increment the value of a statistic
 using methods of the <code>Statistics</code> interface.  If statistics

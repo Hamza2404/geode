@@ -90,7 +90,7 @@ public abstract class AbstractMapIndex extends AbstractIndex {
     private IndexStats vsdStats;
 
     public MapIndexStatistics(String indexName) {
-      this.vsdStats = new IndexStats(getRegion().getCache().getDistributedSystem(), indexName);
+      this.vsdStats = new IndexStats(getRegion().getCache().getDistributedSystem().getStatisticsFactory(), indexName);
     }
 
     /**

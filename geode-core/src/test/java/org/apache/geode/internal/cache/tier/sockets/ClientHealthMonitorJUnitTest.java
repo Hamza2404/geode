@@ -47,7 +47,7 @@ public class ClientHealthMonitorJUnitTest {
         Integer.toString(monitorIntervalMillis));
 
     InternalCache mockCache = mock(InternalCache.class);
-    CacheClientNotifierStats mockStats = mock(CacheClientNotifierStats.class);
+    CacheClientNotifierStatsImpl mockStats = mock(CacheClientNotifierStatsImpl.class);
     clientHealthMonitor = ClientHealthMonitor.getInstance(mockCache, pingIntervalMillis, mockStats);
   }
 

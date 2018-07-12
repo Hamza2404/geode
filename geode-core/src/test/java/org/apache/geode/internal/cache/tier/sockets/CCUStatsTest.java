@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.apache.geode.internal.cache.tier.sockets.CacheClientUpdater.CCUStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheClientUpdater.CCUStatsImpl;
 import org.apache.geode.test.junit.categories.ClientSubscriptionTest;
 
 @Category({ClientSubscriptionTest.class})
@@ -29,7 +29,7 @@ public class CCUStatsTest {
 
   @Test
   public void shouldBeMockable() throws Exception {
-    CCUStats mockCCUStats = mock(CCUStats.class);
+    CCUStatsImpl mockCCUStats = mock(CCUStatsImpl.class);
 
     mockCCUStats.incReceivedBytes(1L);
     mockCCUStats.incSentBytes(1L);

@@ -88,7 +88,7 @@ public class AdminConsoleDisconnectMessage extends PooledDistributionMessage {
             this.getSender()));
       }
     }
-    GemFireStatSampler sampler = sys.getStatSampler();
+    GemFireStatSampler sampler = sys.getInternalDistributedSystemStats().getStatSampler();
     if (sampler != null) {
       sampler.removeListenersByRecipient(this.getSender());
     }

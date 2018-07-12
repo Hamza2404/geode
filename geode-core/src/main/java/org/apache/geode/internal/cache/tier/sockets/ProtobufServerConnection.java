@@ -48,9 +48,9 @@ public class ProtobufServerConnection extends ServerConnection {
    * edge client over a given <code>Socket</code>.
    */
   public ProtobufServerConnection(Socket socket, InternalCache c, CachedRegionHelper helper,
-      CacheServerStats stats, int hsTimeout, int socketBufferSize, String communicationModeStr,
-      byte communicationMode, Acceptor acceptor, ClientProtocolProcessor clientProtocolProcessor,
-      SecurityService securityService) throws IOException {
+                                  CacheServerStats stats, int hsTimeout, int socketBufferSize, String communicationModeStr,
+                                  byte communicationMode, Acceptor acceptor, ClientProtocolProcessor clientProtocolProcessor,
+                                  SecurityService securityService) throws IOException {
     super(socket, c, helper, stats, hsTimeout, socketBufferSize, communicationModeStr,
         communicationMode, acceptor, securityService);
     this.protocolProcessor = clientProtocolProcessor;

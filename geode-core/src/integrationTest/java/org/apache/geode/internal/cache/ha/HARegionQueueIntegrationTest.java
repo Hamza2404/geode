@@ -55,8 +55,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import util.TestException;
 
 import org.apache.geode.CancelCriterion;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
@@ -151,7 +151,7 @@ public class HARegionQueueIntegrationTest {
 
     doReturn(Mockito.mock(InternalDistributedMember.class)).when(mockInternalDistributedSystem)
         .getDistributedMember();
-    doReturn(Mockito.mock(Statistics.class)).when(mockInternalDistributedSystem)
+    doReturn(Mockito.mock(Statistics.class)).when(mockInternalDistributedSystem.getInternalDistributedSystemStats())
         .createAtomicStatistics(any(StatisticsType.class), any(String.class));
     doReturn(Mockito.mock(DistributionConfig.class)).when(mockDistributionManager).getConfig();
     doReturn(mockDistributionManager).when(mockInternalDistributedSystem).getDistributionManager();

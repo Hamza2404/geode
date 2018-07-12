@@ -113,9 +113,9 @@ public class IndexRepositoryImplPerformanceTest {
             cache.createRegionFactory(RegionShortcut.REPLICATE).create("files");
 
         RegionDirectory dir = new RegionDirectory(fileAndChunkRegion,
-            new FileSystemStats(cache.getDistributedSystem(), "region-index"));
+            new FileSystemStats(cache.getDistributedSystem().getStatisticsFactory(), "region-index"));
         final LuceneIndexStats stats =
-            new LuceneIndexStats(cache.getDistributedSystem(), "region-index");
+            new LuceneIndexStats(cache.getDistributedSystem().getStatisticsFactory(), "region-index");
 
 
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -226,7 +226,7 @@ public class IndexRepositoryImplPerformanceTest {
       @Override
       public void init() throws Exception {
         cache = new CacheFactory().set(MCAST_PORT, "0").set(LOG_LEVEL, "warning").create();
-        final FileSystemStats stats = new FileSystemStats(cache.getDistributedSystem(), "stats");
+        final FileSystemStats stats = new FileSystemStats(cache.getDistributedSystem().getStatisticsFactory(), "stats");
         RegionDirectory dir = new RegionDirectory(new ConcurrentHashMap(), stats);
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         writer = new IndexWriter(dir, config);

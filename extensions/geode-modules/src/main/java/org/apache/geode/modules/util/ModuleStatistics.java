@@ -14,11 +14,11 @@
  */
 package org.apache.geode.modules.util;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
+import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
@@ -28,23 +28,22 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class ModuleStatistics {
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
-  private static final int cacheHitsId;
+  private int cacheHitsId;
 
-  private static final int cacheMissesId;
+  private int cacheMissesId;
 
-  private static final int hibernateEntityDestroyJobsScheduledId;
+  private int hibernateEntityDestroyJobsScheduledId;
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    type = f.createType("pluginStats", "statistics for hibernate plugin and hibernate L2 cache",
+  private void initializeStats(StatisticsFactory factory) {
+    type = factory.createType("pluginStats", "statistics for hibernate plugin and hibernate L2 cache",
         new StatisticDescriptor[] {
-            f.createLongCounter("cacheHits", "number of times an entity was found in L2 cache",
+            factory.createLongCounter("cacheHits", "number of times an entity was found in L2 cache",
                 "count"),
-            f.createLongCounter("cacheMisses",
+            factory.createLongCounter("cacheMisses",
                 "number of times an entity was NOT found in l2 cache", "count"),
-            f.createLongCounter("hibernateEntityDestroyJobsScheduled",
+            factory.createLongCounter("hibernateEntityDestroyJobsScheduled",
                 "number of entities scheduled for destroy because of version conflict with a remote member",
                 "jobs")});
 
@@ -58,13 +57,14 @@ public class ModuleStatistics {
   private static ModuleStatistics instance;
 
   private ModuleStatistics(StatisticsFactory factory) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(type, "PluginStatistics");
   }
 
   public static ModuleStatistics getInstance(DistributedSystem system) {
     synchronized (ModuleStatistics.class) {
       if (instance == null) {
-        instance = new ModuleStatistics(system);
+        instance = new ModuleStatistics(system.getStatisticsFactory());
       }
     }
     return instance;

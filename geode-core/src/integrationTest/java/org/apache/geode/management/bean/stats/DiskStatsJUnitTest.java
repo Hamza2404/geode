@@ -24,6 +24,7 @@ import org.junit.experimental.categories.Category;
 import org.apache.geode.internal.NanoTimer;
 import org.apache.geode.internal.cache.DiskStoreStats;
 import org.apache.geode.management.internal.beans.DiskStoreMBeanBridge;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.JMXTest;
 
 @Category({JMXTest.class})
@@ -36,7 +37,7 @@ public class DiskStatsJUnitTest extends MBeanStatsTestCase {
   private static long testStartTime = NanoTimer.getTime();
 
   public void init() {
-    diskStoreStats = new DiskStoreStats(system, "test");
+    diskStoreStats = StatsFactory.createDiskStoreStatsImpl(system.getStatisticsFactory(), "test");
 
     bridge = new DiskStoreMBeanBridge();
     bridge.addDiskStoreStats(diskStoreStats);

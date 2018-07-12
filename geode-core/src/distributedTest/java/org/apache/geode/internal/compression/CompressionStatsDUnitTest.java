@@ -27,6 +27,7 @@ import org.apache.geode.cache.DataPolicy;
 import org.apache.geode.cache.Region;
 import org.apache.geode.compression.Compressor;
 import org.apache.geode.internal.cache.CachePerfStats;
+import org.apache.geode.internal.cache.CachePerfStatsImpl;
 import org.apache.geode.internal.cache.GemFireCacheImpl;
 import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.test.dunit.Host;
@@ -69,7 +70,6 @@ public class CompressionStatsDUnitTest extends JUnit4CacheTestCase {
   /**
    * Creates a new CompressionStatsDUnitTest.
    *
-   * @param name test name.
    */
   public CompressionStatsDUnitTest() {
     super();
@@ -684,9 +684,9 @@ public class CompressionStatsDUnitTest extends JUnit4CacheTestCase {
    * @return previous clock stats value
    */
   private boolean enableClockStats(boolean clockStatsEnabled) {
-    boolean oldValue = CachePerfStats.enableClockStats;
+    boolean oldValue = CachePerfStatsImpl.enableClockStats;
 
-    CachePerfStats.enableClockStats = clockStatsEnabled;
+    CachePerfStatsImpl.enableClockStats = clockStatsEnabled;
 
     return oldValue;
   }

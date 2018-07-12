@@ -38,6 +38,7 @@ import org.apache.geode.internal.cache.tier.Command;
 import org.apache.geode.internal.cache.tier.MessageType;
 import org.apache.geode.internal.cache.tier.sockets.BaseCommand;
 import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.ChunkedMessage;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
@@ -95,7 +96,7 @@ public class PutAll80 extends BaseCommand {
     serverConnection.setAsTrue(REQUIRES_CHUNKED_RESPONSE); // new in 8.0
     {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incReadPutAllRequestTime(start - oldStart);
     }
 
@@ -318,7 +319,7 @@ public class PutAll80 extends BaseCommand {
       return;
     } finally {
       long oldStart = start;
-      start = DistributionStats.getStatTime();
+      start = System.nanoTime();
       stats.incProcessPutAllTime(start - oldStart);
     }
     if (logger.isDebugEnabled()) {
@@ -332,7 +333,7 @@ public class PutAll80 extends BaseCommand {
       writeReply(clientMessage, response, serverConnection);
     }
     serverConnection.setAsTrue(RESPONDED);
-    stats.incWritePutAllResponseTime(DistributionStats.getStatTime() - start);
+    stats.incWritePutAllResponseTime(System.nanoTime() - start);
   }
 
   @Override

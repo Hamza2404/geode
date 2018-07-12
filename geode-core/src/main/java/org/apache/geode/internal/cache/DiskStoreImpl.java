@@ -72,7 +72,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheClosedException;
@@ -122,6 +122,7 @@ import org.apache.geode.pdx.internal.EnumInfo;
 import org.apache.geode.pdx.internal.PdxField;
 import org.apache.geode.pdx.internal.PdxType;
 import org.apache.geode.pdx.internal.PeerTypeRegistration;
+import org.apache.geode.statistics.StatsFactory;
 
 /**
  * Represents a (disk-based) persistent store for region data. Used for both persistent recoverable
@@ -418,8 +419,8 @@ public class DiskStoreImpl implements DiskStore {
     this.criticalPercent = props.getDiskUsageCriticalPercentage();
 
     this.cache = cache;
-    StatisticsFactory factory = cache.getDistributedSystem();
-    this.stats = new DiskStoreStats(factory, getName());
+    StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
+    this.stats = StatsFactory.createDiskStoreStatsImpl(factory, getName());
 
     // start simple init
 
@@ -4574,7 +4575,7 @@ public class DiskStoreImpl implements DiskStore {
   }
 
   public StatisticsFactory getStatisticsFactory() {
-    return this.cache.getDistributedSystem();
+    return this.cache.getDistributedSystem().getStatisticsFactory();
   }
 
 }

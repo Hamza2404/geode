@@ -26,9 +26,9 @@ import java.util.TimerTask;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelException;
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.admin.jmx.internal.StatAlertsAggregator;
 import org.apache.geode.distributed.internal.ClusterDistributionManager;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
@@ -276,7 +276,7 @@ public class StatAlertsManager {
         textId = statInfos[ii].getStatisticsTextId();
 
         // TODO If none by TextID, use StatType and getAll.
-        statistics = dm.getSystem().findStatisticsByTextId(textId);
+        statistics = dm.getSystem().getInternalDistributedSystemStats().findStatisticsByTextId(textId);
         if (statistics.length == 0) {
           logger.error(LocalizedMessage.create(
               LocalizedStrings.StatAlertsManager_STATALERTSMANAGER_CREATEMEMBERSTATALERTDEFINITION_STATISTICS_WITH_GIVEN_TEXTID_0_NOT_FOUND,

@@ -74,6 +74,7 @@ import org.apache.geode.internal.cache.tier.InternalClientMembership;
 import org.apache.geode.internal.cache.tier.sockets.TcpServerFactory;
 import org.apache.geode.management.membership.ClientMembershipEvent;
 import org.apache.geode.management.membership.ClientMembershipListener;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.ClientServerTest;
 
 @SuppressWarnings("deprecation")
@@ -98,9 +99,9 @@ public class AutoConnectionSourceImplJUnitTest {
     props.setProperty(MCAST_PORT, "0");
     props.setProperty(LOCATORS, "");
 
-    DistributedSystem ds = DistributedSystem.connect(props);
-    cache = CacheFactory.create(ds);
-    poolStats = new PoolStats(ds, "pool");
+    DistributedSystem distributedSystem = DistributedSystem.connect(props);
+    cache = CacheFactory.create(distributedSystem);
+    poolStats = StatsFactory.createPoolStatsImpl(distributedSystem.getStatisticsFactory(), "pool");
     port = AvailablePortHelper.getRandomAvailableTCPPort();
 
     handler = new FakeHandler();

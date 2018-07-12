@@ -14,8 +14,8 @@
  */
 package org.apache.geode.internal.statistics;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.StatisticsType;
 
 /**
  * An instance of a StatisticsType which describes the individual stats for each ResourceInstance.

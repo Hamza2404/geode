@@ -75,6 +75,7 @@ import org.apache.geode.distributed.internal.DistributionConfigImpl;
 import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.DistributionMessage;
 import org.apache.geode.distributed.internal.DistributionStats;
+import org.apache.geode.distributed.internal.DistributionStatsImpl;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.SerialAckedMessage;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
@@ -102,6 +103,7 @@ import org.apache.geode.internal.Version;
 import org.apache.geode.internal.admin.remote.RemoteTransportConfig;
 import org.apache.geode.internal.cache.DistributedCacheOperation;
 import org.apache.geode.internal.logging.log4j.AlertAppender;
+import org.apache.geode.statistics.StatsFactory;
 import org.apache.geode.test.junit.categories.MembershipTest;
 
 @Category({MembershipTest.class})
@@ -166,7 +168,7 @@ public class JGroupsMessengerJUnitTest {
     DistributionManager dm = mock(DistributionManager.class);
     InternalDistributedSystem system =
         InternalDistributedSystem.newInstanceForTesting(dm, nonDefault);
-    when(services.getStatistics()).thenReturn(new DistributionStats(system, statsId));
+    when(services.getStatistics()).thenReturn(StatsFactory.createDistributionStatsImpl(system.getStatisticsFactory(), String.valueOf(statsId)));
 
     messenger = new JGroupsMessenger();
     messenger.init(services);
@@ -832,7 +834,7 @@ public class JGroupsMessengerJUnitTest {
   @Test
   public void testReceiver() throws Exception {
     try {
-      DistributionStats.enableClockStats = true;
+      DistributionStatsImpl.enableClockStats = true;
       initMocks(false);
       JGroupsReceiver receiver = (JGroupsReceiver) messenger.myChannel.getReceiver();
 
@@ -871,7 +873,7 @@ public class JGroupsMessengerJUnitTest {
       assertTrue("There should be UDPDispatchRequestTime stats",
           services.getStatistics().getUDPDispatchRequestTime() > 0);
     } finally {
-      DistributionStats.enableClockStats = false;
+      DistributionStatsImpl.enableClockStats = false;
     }
   }
 

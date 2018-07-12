@@ -17,8 +17,8 @@ package org.apache.geode.internal.statistics;
 
 import java.util.List;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
 
 /**
  * Defines the contract that a statistics factory must implement for its Statistics instances. This

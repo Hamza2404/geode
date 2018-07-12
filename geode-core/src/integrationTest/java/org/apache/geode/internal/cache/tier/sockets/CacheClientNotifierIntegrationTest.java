@@ -53,8 +53,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.DataSerializer;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.AttributesMutator;
 import org.apache.geode.cache.Operation;
 import org.apache.geode.cache.RegionAttributes;
@@ -277,7 +277,7 @@ public class CacheClientNotifierIntegrationTest {
 
     doReturn(mock(InternalDistributedMember.class)).when(mockInternalDistributedSystem)
         .getDistributedMember();
-    doReturn(mock(Statistics.class)).when(mockInternalDistributedSystem)
+    doReturn(mock(Statistics.class)).when(mockInternalDistributedSystem.getInternalDistributedSystemStats())
         .createAtomicStatistics(any(StatisticsType.class), any(String.class));
     doReturn(mock(DistributionConfig.class)).when(mockDistributionManager).getConfig();
     doReturn(mockDistributionManager).when(mockInternalDistributedSystem).getDistributionManager();

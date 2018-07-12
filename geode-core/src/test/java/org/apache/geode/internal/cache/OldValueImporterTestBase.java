@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.apache.geode.internal.HeapDataOutputStream;
 import org.apache.geode.internal.cache.EntryEventImpl.OldValueImporter;
 import org.apache.geode.internal.offheap.MemoryAllocatorImpl;
-import org.apache.geode.internal.offheap.NullOffHeapMemoryStats;
+import org.apache.geode.internal.offheap.NullOffHeapStorageStats;
 import org.apache.geode.internal.offheap.NullOutOfOffHeapMemoryListener;
 import org.apache.geode.internal.offheap.OffHeapStoredObject;
 import org.apache.geode.internal.offheap.SlabImpl;
@@ -108,7 +108,7 @@ public abstract class OldValueImporterTestBase {
     {
       MemoryAllocatorImpl sma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+              new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
       try {
         byte[] baValue = new byte[] {1, 2};
         TinyStoredObject baValueSO =
@@ -127,7 +127,7 @@ public abstract class OldValueImporterTestBase {
     {
       MemoryAllocatorImpl sma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+              new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
       try {
         byte[] baValue = new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
         OffHeapStoredObject baValueSO =
@@ -146,7 +146,7 @@ public abstract class OldValueImporterTestBase {
     {
       MemoryAllocatorImpl sma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+              new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
       try {
         String baValue = "12";
         byte[] baValueBlob = BlobHelper.serializeToBlob(baValue);
@@ -167,7 +167,7 @@ public abstract class OldValueImporterTestBase {
     {
       MemoryAllocatorImpl sma =
           MemoryAllocatorImpl.createForUnitTest(new NullOutOfOffHeapMemoryListener(),
-              new NullOffHeapMemoryStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
+              new NullOffHeapStorageStats(), new SlabImpl[] {new SlabImpl(1024 * 1024)});
       try {
         String baValue = "12345678";
         byte[] baValueBlob = BlobHelper.serializeToBlob(baValue);

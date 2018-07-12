@@ -15,14 +15,13 @@
 
 package org.apache.geode.internal.statistics.platform;
 
-import org.apache.geode.StatisticDescriptor;
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
-import org.apache.geode.StatisticsTypeFactory;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.statistics.HostStatHelper;
 import org.apache.geode.internal.statistics.LocalStatisticsImpl;
-import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
+import org.apache.geode.statistics.StatisticDescriptor;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsType;
 
 /**
  * <P>
@@ -61,94 +60,93 @@ public class SolarisProcessStats {
   private static final int cpuUsedDOUBLE = 0;
   private static final int memoryUsedDOUBLE = 1;
 
-  private static final StatisticsType myType;
+  private StatisticsType myType;
 
-  private static void checkOffset(String name, int offset) {
+  private void checkOffset(String name, int offset) {
     int id = myType.nameToId(name);
     Assert.assertTrue(offset == id,
         "Expected the offset for " + name + " to be " + offset + " but it was " + id);
   }
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    myType = f.createType("SolarisProcessStats", "Statistics on a Solaris process.",
+  private void initializeStats(StatisticsFactory factory) {
+    myType = factory.createType("SolarisProcessStats", "Statistics on a Solaris process.",
         new StatisticDescriptor[] {
-            f.createIntCounter("allOtherSleepTime",
+            factory.createIntCounter("allOtherSleepTime",
                 "The number of milliseconds the process has been sleeping for some reason not tracked by any other stat. Note that all lwp's contribute to this stat's value so check lwpCurCount to understand large values.",
                 "milliseconds", false),
-            f.createIntCounter("characterIo", "The number of characters read and written.",
+            factory.createIntCounter("characterIo", "The number of characters read and written.",
                 "bytes"),
-            f.createIntCounter("dataFaultSleepTime",
+            factory.createIntCounter("dataFaultSleepTime",
                 "The number of milliseconds the process has been faulting in data pages.",
                 "milliseconds", false),
-            f.createIntGauge("heapSize", "The size of the process's heap in megabytes.",
+            factory.createIntGauge("heapSize", "The size of the process's heap in megabytes.",
                 "megabytes"),
-            f.createIntGauge("imageSize", "The size of the process's image in megabytes.",
+            factory.createIntGauge("imageSize", "The size of the process's image in megabytes.",
                 "megabytes"),
-            f.createIntCounter("involContextSwitches",
+            factory.createIntCounter("involContextSwitches",
                 "The number of times the process was forced to do a context switch.", "operations",
                 false),
-            f.createIntCounter("kernelFaultSleepTime",
+            factory.createIntCounter("kernelFaultSleepTime",
                 "The number of milliseconds the process has been faulting in kernel pages.",
                 "milliseconds", false),
-            f.createIntCounter("lockWaitSleepTime",
+            factory.createIntCounter("lockWaitSleepTime",
                 "The number of milliseconds the process has been waiting for a user lock. Note that all lwp's contribute to this stat's value so check lwpCurCount to understand large values.",
                 "milliseconds", false),
-            f.createIntGauge("lwpCurCount",
+            factory.createIntGauge("lwpCurCount",
                 "The current number of light weight processes that exist in the process.",
                 "threads"),
-            f.createIntCounter("lwpTotalCount",
+            factory.createIntCounter("lwpTotalCount",
                 "The total number of light weight processes that have ever contributed to the process's statistics.",
                 "threads", false),
-            f.createIntCounter("majorFaults",
+            factory.createIntCounter("majorFaults",
                 "The number of times the process has had a page fault that needed disk access.",
                 "operations", false),
-            f.createIntCounter("messagesRecv", "The number of messages received by the process.",
+            factory.createIntCounter("messagesRecv", "The number of messages received by the process.",
                 "messages"),
-            f.createIntCounter("messagesSent", "The number of messages sent by the process.",
+            factory.createIntCounter("messagesSent", "The number of messages sent by the process.",
                 "messages"),
-            f.createIntCounter("minorFaults",
+            factory.createIntCounter("minorFaults",
                 "The number of times the process has had a page fault that did not need disk access.",
                 "operations", false),
-            f.createIntGauge("rssSize", "The size of the process's resident set size in megabytes.",
+            factory.createIntGauge("rssSize", "The size of the process's resident set size in megabytes.",
                 "megabytes"),
-            f.createIntCounter("signalsReceived",
+            factory.createIntCounter("signalsReceived",
                 "The total number of operating system signals this process has received.",
                 "signals", false),
-            f.createIntCounter("systemCalls", "The total number system calls done by this process.",
+            factory.createIntCounter("systemCalls", "The total number system calls done by this process.",
                 "operations"),
-            f.createIntGauge("stackSize", "The size of the process's stack in megabytes.",
+            factory.createIntGauge("stackSize", "The size of the process's stack in megabytes.",
                 "megabytes"),
-            f.createIntCounter("stoppedTime",
+            factory.createIntCounter("stoppedTime",
                 "The number of milliseconds the process has been stopped.", "milliseconds", false),
-            f.createIntCounter("systemTime",
+            factory.createIntCounter("systemTime",
                 "The number of milliseconds the process has been using the CPU to execute system calls.",
                 "milliseconds", false),
-            f.createIntCounter("textFaultSleepTime",
+            factory.createIntCounter("textFaultSleepTime",
                 "The number of milliseconds the process has been faulting in text pages.",
                 "milliseconds", false),
-            f.createIntCounter("trapTime",
+            factory.createIntCounter("trapTime",
                 "The number of milliseconds the process has been in system traps.", "milliseconds",
                 false),
-            f.createIntCounter("userTime",
+            factory.createIntCounter("userTime",
                 "The number of milliseconds the process has been using the CPU to execute user code.",
                 "milliseconds", false),
-            f.createIntCounter("volContextSwitches",
+            factory.createIntCounter("volContextSwitches",
                 "The number of voluntary context switches done by the process.", "operations",
                 false),
-            f.createIntCounter("waitCpuTime",
+            factory.createIntCounter("waitCpuTime",
                 "The number of milliseconds the process has been waiting for a CPU due to latency.",
                 "milliseconds", false),
 
 
-            f.createLongCounter("activeTime",
+            factory.createLongCounter("activeTime",
                 "The number of milliseconds the process has been using the CPU to execute user or system code.",
                 "milliseconds", false),
 
 
-            f.createDoubleGauge("cpuUsed", "The percentage of recent cpu time used by the process.",
+            factory.createDoubleGauge("cpuUsed", "The percentage of recent cpu time used by the process.",
                 "%"),
-            f.createDoubleGauge("memoryUsed", "The percentage of real memory used by the process.",
+            factory.createDoubleGauge("memoryUsed", "The percentage of real memory used by the process.",
                 "%")});
 
     checkOffset("allOtherSleepTime", allOtherSleepTimeINT);
@@ -183,12 +181,8 @@ public class SolarisProcessStats {
     checkOffset("memoryUsed", memoryUsedDOUBLE);
   }
 
-  private SolarisProcessStats() {
-    // no instances allowed
-  }
-
-  public static StatisticsType getType() {
-    return myType;
+  public SolarisProcessStats(StatisticsFactory factory) {
+    initializeStats(factory);
   }
 
   /**
@@ -207,5 +201,9 @@ public class SolarisProcessStats {
         return stats.getInt(rssSizeINT);
       }
     };
+  }
+
+  public StatisticsType getType() {
+    return myType;
   }
 }

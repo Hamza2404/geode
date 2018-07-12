@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.LocalRegion;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
+import org.apache.geode.internal.cache.tier.sockets.CacheServerStatsImpl;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
@@ -60,7 +60,7 @@ public class ContainsKey66Test {
   @Mock
   private InternalCache cache;
   @Mock
-  private CacheServerStats cacheServerStats;
+  private CacheServerStatsImpl cacheServerStats;
   @Mock
   private Message responseMessage;
   @Mock

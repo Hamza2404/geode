@@ -47,8 +47,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 
-import org.apache.geode.Statistics;
-import org.apache.geode.StatisticsType;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.internal.GemFireVersion;
@@ -75,7 +75,7 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
 
   private static final int STAT_SAMPLE_RATE = 1000;
 
-  private DistributedSystem system;
+  private DistributedSystem distributedSystem;
   private File testDir;
 
   @Rule
@@ -374,7 +374,7 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
     final File archiveFile2 = new File(dirName + File.separator + this.testName + "-01-02.gfs");
     final File archiveFile3 = new File(dirName + File.separator + this.testName + "-01-03.gfs");
 
-    // set the system property to use KB instead of MB for file size
+    // set the distributedSystem property to use KB instead of MB for file size
     System.setProperty(HostStatSampler.TEST_FILE_SIZE_LIMIT_IN_KB_PROPERTY, "true");
     Properties props = createGemFireProperties();
     props.setProperty(ARCHIVE_FILE_SIZE_LIMIT, "1");
@@ -422,7 +422,7 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
 
     final int sampleRate = 1000;
 
-    // set the system property to use KB instead of MB for file size
+    // set the distributedSystem property to use KB instead of MB for file size
     System.setProperty(HostStatSampler.TEST_FILE_SIZE_LIMIT_IN_KB_PROPERTY, "true");
     Properties props = createGemFireProperties();
     props.setProperty(STATISTIC_ARCHIVE_FILE, archiveFileName);
@@ -478,7 +478,7 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
     final String tenuredPoolName = HeapMemoryMonitor.getTenuredMemoryPoolMXBean().getName();
     logger.info("TenuredPoolName: {}", tenuredPoolName);
 
-    final List<Statistics> list = ((StatisticsManager) this.system).getStatsList();
+    final List<Statistics> list = ((StatisticsManager) this.distributedSystem).getStatsList();
     assertFalse(list.isEmpty());
 
     boolean done = false;
@@ -532,15 +532,15 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
 
   @Override
   protected StatisticsManager getStatisticsManager() {
-    return (InternalDistributedSystem) this.system;
+    return ((InternalDistributedSystem)this.distributedSystem).getInternalDistributedSystemStats();
   }
 
   protected OsStatisticsFactory getOsStatisticsFactory() {
-    return (InternalDistributedSystem) this.system;
+    return ((InternalDistributedSystem)this.distributedSystem).getInternalDistributedSystemStats();
   }
 
   private GemFireStatSampler getGemFireStatSampler() {
-    return ((InternalDistributedSystem) this.system).getStatSampler();
+    return ((InternalDistributedSystem) this.distributedSystem).getInternalDistributedSystemStats().getStatSampler();
   }
 
   private SampleCollector getSampleCollector() {
@@ -565,65 +565,14 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
    */
   @SuppressWarnings("deprecation")
   private void connect(Properties props) {
-    this.system = DistributedSystem.connect(props);
+    this.distributedSystem = DistributedSystem.connect(props);
   }
 
   @SuppressWarnings("deprecation")
   private void disconnect() {
-    if (this.system != null) {
-      this.system.disconnect();
-      this.system = null;
+    if (this.distributedSystem != null) {
+      this.distributedSystem.disconnect();
+      this.distributedSystem = null;
     }
   }
-
-  // public static class AsyncInvoker {
-  // public static AsyncInvocation invokeAsync(Runnable r) {
-  // return invokeAsync(r, "run", new Object[0]);
-  // }
-  // public static AsyncInvocation invokeAsync(Callable c) {
-  // return invokeAsync(c, "call", new Object[0]);
-  // }
-  // public static AsyncInvocation invokeAsync(
-  // final Object o, final String methodName, final Object[] args) {
-  // AsyncInvocation ai =
-  // new AsyncInvocation(o, methodName, new Runnable() {
-  // public void run() {
-  // MethExecutorResult result =
-  // MethExecutor.executeObject(o, methodName, args);
-  // if (result.exceptionOccurred()) {
-  // throw new AsyncInvocationException(result.getException());
-  // }
-  // AsyncInvocation.setReturnValue(result.getResult());
-  // }
-  // });
-  // ai.start();
-  // return ai;
-  // }
-  //
-  // public static class AsyncInvocationException extends RuntimeException {
-  // private static final long serialVersionUID = -5522299018650622945L;
-  // /**
-  // * Creates a new <code>AsyncInvocationException</code>.
-  // */
-  // public AsyncInvocationException(String message) {
-  // super(message);
-  // }
-  //
-  // /**
-  // * Creates a new <code>AsyncInvocationException</code> that was
-  // * caused by a given exception
-  // */
-  // public AsyncInvocationException(String message, Throwable thr) {
-  // super(message, thr);
-  // }
-  //
-  // /**
-  // * Creates a new <code>AsyncInvocationException</code> that was
-  // * caused by a given exception
-  // */
-  // public AsyncInvocationException(Throwable thr) {
-  // super(thr.getMessage(), thr);
-  // }
-  // }
-  // }
 }

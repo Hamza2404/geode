@@ -14,7 +14,7 @@
  */
 package org.apache.geode.internal.cache.eviction;
 
-import org.apache.geode.Statistics;
+import org.apache.geode.statistics.Statistics;
 
 public interface EvictionCounters {
 
