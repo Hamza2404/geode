@@ -28,6 +28,7 @@ jobs:
 - name: (( grab metadata.job.name ))
   serial: false
   public: true
+  max_in_flight: 5
   plan:
   - do:
     - get: geode-ci
