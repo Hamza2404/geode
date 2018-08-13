@@ -22,7 +22,7 @@ metadata:
     dunit:
       parallel: true
 # max number of docker containers to run, generally cpus/2
-      forks: 36
+      forks: 24
     cpus: 96
 # specified in Gigabytes.
     ram: 180
